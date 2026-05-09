@@ -1,0 +1,61 @@
+
+
+#agregar-rutas{
+    background-color: rgb(238, 101, 101);
+    display: flex;
+    padding: 15px;
+    max-height: 80vh;
+    width: 100%;
+}
+
+#agregar-rutas .buscador{
+}
+
+
+
+#ventana-rutas-global{
+    display: flex;
+    flex: 1;
+    background-color: blue;
+    overflow: scroll; 
+    justify-content: center;
+    padding: 15px;
+}
+
+
+#ventana-rutas-global td{
+
+}
+
+
+#agregar-rutas #mapamundi-holder{
+    max-width: 60vw;
+    height: auto;
+
+}
+
+
+#tabla-marcadores {
+    padding: 20px 0px;
+    table-layout: fixed;
+    text-align: center; /* Los números suelen quedar mejor centrados */
+}
+
+#tabla-marcadores tr{
+    background-color: red;
+}
+
+#tabla-marcadores thead tr:nth-child(1){
+    background-color: purple;
+}
+
+
+#tabla-marcadores th:nth-child(1),
+#tabla-marcadores td:nth-child(1)
+{
+    max-width: 60px;
+}
+
+#agregar-rutas #mapamunid{
+    height: 100%;
+}

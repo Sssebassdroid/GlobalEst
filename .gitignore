@@ -1,0 +1,40 @@
+# 1. BLOQUEO TOTAL
+# Ignoramos absolutamente todo el contenido de la raíz
+/*
+
+# 2. EXCEPCIONES (Lo que SÍ queremos subir)
+# Permitimos las carpetas de lógica y vistas
+!/app/
+!/routes/
+!/resources/
+!/database/
+!/tests/
+
+# Permitimos archivos de configuración e inicio de Laravel (imprescindibles)
+!/public/
+!/config/
+!/.gitignore
+!/composer.json
+!/composer.lock
+!/package.json
+!/package-lock.json
+!/vite.config.js
+!/artisan
+
+# 3. RE-BLOQUEO DE SEGURIDAD (Dentro de las excepciones)
+# Aunque permitimos /public/, no queremos subir archivos temporales de Vite ni enlaces de storage
+/public/build/
+/public/storage
+/public/hot
+/storage/*.key
+
+# Bloqueo estricto de archivos sensibles y dependencias
+.env
+.env.*
+/vendor/
+/node_modules/
+.phpunit.result.cache
+.phpunit.cache/
+.vscode/
+.idea/
+*.log

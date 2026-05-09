@@ -1,0 +1,27 @@
+.form-container-bigger{
+    background-color: blueviolet;
+    padding: 20px;
+}
+
+.form-container{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-container input, 
+.form-container select,
+.form-container label
+
+{
+    background-color: lightblue;
+    padding: 10px;
+}
+
+
+
+#contraseña-incorrecta{
+    display: none;
+    background-color: red;
+}

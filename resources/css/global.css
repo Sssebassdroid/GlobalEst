@@ -1,0 +1,145 @@
+*{
+    margin: 0;
+    border: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body{
+    background-color: #CAF0F8; /* Azul hielo suave */
+    font-family: "League Spartan", sans-serif;
+    color: #03045E;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.nav{
+    padding-inline: 2rem 1rem;
+    background-color: #0077B6; 
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#contenedor-opciones{
+    display: flex;
+    gap: 2em;
+}
+
+#contenedor-opciones i {
+    color: white; /* Iconos en blanco */
+}
+
+#logo-container{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#logo-container h1 {
+    color: white; /* Nombre de marca en blanco */
+}
+
+#logo-container img, 
+#logo-container h1,
+#contenedor-opciones a {
+    transition: opacity 0.3s ease;
+}
+
+#logo-container:hover img, 
+#logo-container:hover h1{
+    opacity: 0.5;
+}
+
+#contenedor-opciones:hover a{
+    opacity: 0.5;
+}
+
+#img-logo{
+    height: 50px;
+    width: auto;
+}
+
+.main{
+    flex-grow: 1;
+    gap: 20px;
+    margin: 20px 0px;
+}
+
+
+.main-centered{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    
+}
+
+#search-tagline{
+    text-align: center;    
+    font-size: xx-large;
+    color: #023E8A;
+}
+
+#mapamundi{
+    width: 80vw;
+    height: 450px; 
+    border: 2px solid #3facbf73; /* Borde navy */
+    border-radius: 10px;
+}
+.buscador{
+    min-height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 3%;
+    border-radius: 25px;
+    background: white;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Sombra suave */
+}
+
+.buscar{
+    font-family: 'League Spartan', sans-serif;
+    padding: 0px 15px;
+    border: none;
+    flex: 3;
+    outline: none;
+    color: #03045E;
+}
+
+#lupa {
+    background-color: #00B4D8; /* Cian para la lupa */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    flex:0.5;
+    cursor: pointer;
+}
+
+#lupa:hover {
+    background-color: #0077B6;
+}
+
+#mapamundi-holder{
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    width: 85vw;
+}
+
+
+
+footer{
+    background-color: #03045E;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
