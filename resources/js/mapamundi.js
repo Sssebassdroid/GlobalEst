@@ -44,6 +44,10 @@ async function createMarker(lat, long) {
     );
     
     listaTours.push(newPlace);
+    
+    // ¡PASO NECESARIO!: Actualizar el almacén cada vez que añadimos un punto
+    localStorage.setItem('itinerario_temporal', JSON.stringify(listaTours));
+    
     polyline.addLatLng([lat, long]);
     L.marker([lat, long], { icon: customIcon(listaTours.length) }).addTo(map).bindPopup(newPlace.display_name);
     actualizarTablaVistaPrevia();
@@ -63,14 +67,17 @@ function actualizarTablaVistaPrevia() {
 // PERSISTENCIA: La única responsabilidad de este botón es guardar en LocalStorage
 if (formConfirmarRuta) {
     formConfirmarRuta.addEventListener('submit', function(e) {
-        if (listaTours.length === 0) {
+        const datos = localStorage.getItem('itinerario_temporal');
+        const inputHidden = document.getElementById('itinerario-temporal');
+        
+        if (!datos || JSON.parse(datos).length === 0) {
             e.preventDefault();
-            alert("Selecciona al menos un lugar.");
+            alert("No hay puntos seleccionados.");
             return;
         }
-        // Guardamos la "verdad" en el navegador antes de saltar de página
-        localStorage.setItem('itinerario_temporal', JSON.stringify(listaTours));
-        console.log("Itinerario persistido en LocalStorage.");
+
+        // ¡PASO CRÍTICO!: Inyectar el JSON en el input que leerá Laravel
+        inputHidden.value = datos; 
     });
 }
 

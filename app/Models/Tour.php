@@ -16,7 +16,7 @@ class Tour extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'agency',
+        'agency_id',
         'category_tour',
         'tour_price',
         'tour_name',

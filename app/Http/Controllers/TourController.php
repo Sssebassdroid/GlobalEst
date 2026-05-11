@@ -143,7 +143,7 @@ class TourController extends Controller
                 $categoryIds[] = $category->id_category;
             }
             // Sincroniza la tabla pivote de categorías
-            $tour->categorias()->sync($categoryIds);
+            $tour->categories()->sync($categoryIds);
         }
     }
 
