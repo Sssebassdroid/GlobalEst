@@ -85,58 +85,47 @@ class TourController extends Controller
      * Publica un Tour (Flujo 100% Stateless).
      */
     public function add(Request $request)
-    {
-        Log::info('Inicio de publicación de tour vía JSON.', ['user_id' => auth()->id()]);
+{
+    Log::info('Procesando creación de tour Stateless.', ['user_id' => auth()->id()]);
 
-        try {
-            // Procesamos y validamos la entrada
-            $validated = $this->validateTourPayload($request);
-            
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Fallo de validación JSON.', ['errors' => $e->errors()]);
-            
-            // Si es una petición AJAX/Fetch, devolvemos JSON con los errores
-            if ($request->expectsJson()) {
-                return response()->json(['status' => 'error', 'errors' => $e->errors()], 422);
-            }
-            return back()->withErrors($e->errors())->withInput();
+    try {
+        $validated = $this->validateTourPayload($request);
+
+        // REGLA: Si el JSON de puntos está vacío, abortamos.
+        if (empty($validated['puntos'])) {
+            Log::warning('Acceso ilegal a creación de tour sin datos.');
+            return redirect()->route('places.index')->with('error', 'Debes seleccionar lugares primero.');
         }
 
-        try {
-            $tour = DB::transaction(function () use ($request, $validated) {
-                
-                $agencia = Agency::where('user_id', auth()->id())->firstOrFail();
-                $path = $request->file('image')->store('tours', 'public');
+        $tour = DB::transaction(function () use ($request, $validated) {
+            $agencia = Agency::where('user_id', auth()->id())->firstOrFail();
+            $path = $request->file('image')->store('tours', 'public');
 
-                $tour = Tour::create([
-                    'tour_name'          => $validated['tour_name'],
-                    'tour_price'         => $validated['tour_price'],
-                    'description'        => $validated['description'],
-                    'estimated_duration' => \Carbon\Carbon::parse($validated['estimated_duration'])->format('H:i:s'),
-                    'image'              => $path,
-                    'agency_id'          => $agencia->id_agency, 
-                ]);
+            $tour = Tour::create([
+                'tour_name'          => $validated['tour_name'],
+                'tour_price'         => $validated['tour_price'],
+                'description'        => $validated['description'],
+                'estimated_duration' => \Carbon\Carbon::parse($validated['estimated_duration'])->format('H:i:s'),
+                'image'              => $path,
+                'agency_id'          => $agencia->id_agency, 
+            ]);
 
-                // Procesamos categorías e itinerario usando los datos ya validados
-                $this->processTourCategories($tour, $validated['categories_data']);
-                $this->processItinerary($tour->id_tour, $validated['puntos']);
-                
-                return $tour;
-            });
-
-            Log::info("Tour guardado exitosamente.", ['tour_id' => $tour->id_tour]);
+            $this->processTourCategories($tour, $validated['categories_data']);
             
-            return response()->json([
-                'status' => 'success',
-                'message' => '¡Tour publicado con éxito!',
-                'redirect' => route('my-tours')
-            ]); 
+            // DELEGACIÓN: Centralizamos la lógica de paradas en su controlador experto
+            PlacesAvailableController::persistItinerary($tour->id_tour, $validated['puntos']);
+            
+            return $tour;
+        });
 
-        } catch (\Exception $e) {
-            Log::critical("Fallo en transacción: " . $e->getMessage());
-            return response()->json(['status' => 'error', 'message' => 'Error interno del servidor.'], 500);
-        }
+        Log::info('Tour publicado con éxito.', ['tour_id' => $tour->id_tour]);
+        return view('my-tours', ['success' => '¡Tour creado exitosamente!', 'tours' => Tour::all()]);
+
+    } catch (\Exception $e) {
+        Log::error('Fallo crítico en creación de Tour.', ['msg' => $e->getMessage()]);
+        return back()->withInput()->with('error', 'Hubo un problema al guardar el tour.');
     }
+}
     /**
      * Vincula las categorías (Grado 3).
      */

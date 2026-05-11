@@ -1,57 +1,57 @@
 @extends('layouts.app')
 
-@section('title', 'Mis Tours')
+@section('title', 'Crear Tour')
 
 @section('content')
-    <p id="search-tagline">Gestión de tus Tours Publicados</p>
+    <p id="search-tagline">¡Configura los detalles de tu Tour!</p>
 
     <div id="register-container" class="form-container-bigger">
-        <div class="form-container">
-            <h3>Lista de Tours</h3>
+        <form action="{{ route('tour.create') }}" method="POST" enctype="multipart/form-data" id="tour-form" class="form-container">
+            @csrf
+            
+            <input id="tour_name" type="text" name="tour_name" placeholder="Nombre del Tour" required value="{{ old('tour_name') }}">
+            <textarea id="description" name="description" placeholder="Descripción...">{{ old('description') }}</textarea>
+            <input id="tour_price" type="number" name="tour_price" step="0.01" placeholder="Precio (€)" required value="{{ old('tour_price') }}">
+            <input id="estimated_duration" type="time" name="estimated_duration" required value="{{ old('estimated_duration') }}">
+
+            <input type="text" id="category-input" class="form-control" placeholder="Añadir categoría..." list="categories-list">
+            <datalist id="categories-list">
+                @foreach($categorias as $categoria)
+                    <option value="{{ $categoria->name }}">
+                @endforeach
+            </datalist>
+            <div id="selected-tags"></div>
+            <input type="hidden" name="categories_data" id="categories-data" value="[]">
+
+            <label for="image">Imagen de portada:</label>
+            <input type="file" name="image" id="image" accept="image/*" required>
+            
+            <hr>
+            <h3>Itinerario Seleccionado</h3>
             <table id="tabla-marcadores">
-                <thead>x
+                <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Precio</th>
-                        <th>Duración</th>
-                        <th>Categorías</th>
+                        <th>Posición</th>
+                        <th>Lugar</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($tours as $tour)
-                        <tr>
-                            <td>{{ $tour->id_tour }}</td>
-                            <td><strong>{{ $tour->tour_name }}</strong></td>
-                            <td>{{ $tour->tour_price }}€</td>
-                            <td>{{ $tour->estimated_duration }}</td>
-                            <td>
-                                @foreach($tour->categories as $categories)
-                                    <span">
-                                        {{ $categories->name }}
-                                    </span>
-                                @endforeach
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5">Aún no has publicado ningún tour.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
+                <tbody id="cuerpo-tabla"></tbody>
             </table>
+
+            {{-- IMPORTANTE: El ID debe ser puntos-json para el script --}}
+            <input type="hidden" name="puntos_json" id="puntos-json">
+
+            @if ($errors->any())
+                <div class="error-box">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             
-            <br>
-            <a href="{{ route('places.add') }}" class="btn-primary">
-                + Crear nuevo tour
-            </a>
-        </div>
+            <input type="submit" value="Publicar Tour">
+        </form>
     </div>
 @endsection
-
-@if(session('success'))
-    <script>
-        localStorage.removeItem('itinerario_temporal');
-        console.log('Borrador de tour limpiado con éxito.');
-    </script>
-@endif

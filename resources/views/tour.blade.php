@@ -41,8 +41,7 @@
             </table>
 
             {{-- INPUT OCULTO MAESTRO: Aquí irá todo el JSON del itinerario --}}
-            <input type="hidden" name="itinerario_temporal" id="itinerario-temporal">
-
+            <input type="hidden" name="puntos_json" id="itinerario-temporal">
             @if ($errors->any())
                 <div class="error-box">
                     <ul>
