@@ -22,7 +22,7 @@ class PlacesAvailableController extends Controller
     public function processSelection(Request $request)
     {
         try {
-            $puntos = json_decode($request->input('puntos_json'), true);
+            $puntos = json_decode($request->input('itinerario_temporal'), true);
 
             if (!$puntos || count($puntos) === 0) {
                 Log::warning('Intento de envío de itinerario vacío.', ['user_id' => auth()->id()]);

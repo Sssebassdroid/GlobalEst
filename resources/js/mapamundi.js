@@ -22,42 +22,15 @@ function customIcon(posicion){
     });
 }
 
-async function getCoordsByName(namePlace){
-    try{
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(namePlace)}`);
-        const data = await response.json();
-        if(data.length > 0){   
-            const firstResult = data[0];
-            map.flyTo([firstResult.lat, firstResult.lon], 15); 
-            createMarker(firstResult.lat, firstResult.lon);
-        }
-    } catch(error){
-        console.error("Error en la geocodificacion", error);
-    }
-}
-
-async function getDataFromCoords(coordenada) {
-    try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coordenada.getLat}&lon=${coordenada.getLong}`, {
-            headers: { 'Accept-Language': 'es' }
-        });
-        return await response.json();
-    } catch (error) {
-        console.error("Error en geocodificación inversa:", error);
-        return null;
-    }
-}
-
-function createMarkerOnClick(){
-   map.on('click', (e) => createMarker(e.latlng.lat, e.latlng.lng));
-}
-
+// Lógica de geocodificación y marcadores (Se mantiene igual)
 async function createMarker(lat, long) {
     const newCoord = new Coordenada(lat, long);
     if (!newCoord.isValid()) return;
 
-    const data = await getDataFromCoords(newCoord);
-    if (!data) return;
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}`, {
+        headers: { 'Accept-Language': 'es' }
+    });
+    const data = await response.json();
 
     const newPlace = new Lugar(
         data.place_id || Date.now(),
@@ -73,10 +46,10 @@ async function createMarker(lat, long) {
     listaTours.push(newPlace);
     polyline.addLatLng([lat, long]);
     L.marker([lat, long], { icon: customIcon(listaTours.length) }).addTo(map).bindPopup(newPlace.display_name);
-    actualizarTablaRutas();
+    actualizarTablaVistaPrevia();
 }
 
-function actualizarTablaRutas() {
+function actualizarTablaVistaPrevia() {
     const cuerpo = document.getElementById('cuerpo-tabla');
     if (!cuerpo) return;
     cuerpo.innerHTML = listaTours.map((lugar, index) => `
@@ -87,7 +60,7 @@ function actualizarTablaRutas() {
     `).join('');
 }
 
-// PERSISTENCIA: Al confirmar, guardamos en LocalStorage
+// PERSISTENCIA: La única responsabilidad de este botón es guardar en LocalStorage
 if (formConfirmarRuta) {
     formConfirmarRuta.addEventListener('submit', function(e) {
         if (listaTours.length === 0) {
@@ -95,66 +68,18 @@ if (formConfirmarRuta) {
             alert("Selecciona al menos un lugar.");
             return;
         }
-        const jsonStr = JSON.stringify(listaTours);
-        localStorage.setItem('itinerario_temporal', jsonStr);
-        // Sincronizamos con el input del form actual si existe
-        const input = document.getElementById('itinerario-temporal');
-        if (input) input.value = jsonStr;
+        // Guardamos la "verdad" en el navegador antes de saltar de página
+        localStorage.setItem('itinerario_temporal', JSON.stringify(listaTours));
+        console.log("Itinerario persistido en LocalStorage.");
     });
 }
 
-// CARGA Y RENDERIZADO: Al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    const data = localStorage.getItem('itinerario_temporal');
-    const puntos = data ? JSON.parse(data) : [];
-    
-    // Seguridad: Si intentamos entrar a crear tour sin puntos, abortamos
-    if (puntos.length === 0 && window.location.pathname.includes('create-tour')) {
-        window.location.href = '/places';
-        return;
-    }
-    
-    renderItinerary(puntos);
-});
-
-function renderItinerary(puntos) {
-    const tabla = document.getElementById('cuerpo-tabla');
-    const inputOculto = document.getElementById('itinerario_temporal'); // ID unificado con Blade
-
-    if (tabla) {
-        tabla.innerHTML = puntos.map((lugar, index) => `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${lugar.display_name}</td>
-            </tr>
-        `).join('');
-    }
-
-    if (inputOculto) {
-        inputOculto.value = JSON.stringify(puntos);
-    }
-}
-
-createMarkerOnClick();
-if (formulario) {
-    formulario.addEventListener('submit', (e) => {
-        e.preventDefault();
-        getCoordsByName(placeName.value);
-    });
-}
+map.on('click', (e) => createMarker(e.latlng.lat, e.latlng.lng));
 
 window.limpiarMapa = function() {
-    if (confirm("¿Seguro que quieres borrar todos los puntos?")) {
-        listaTours = []; // Vacía el array en memoria
-        localStorage.removeItem('itinerario-temporal'); // Borra el disco duro del navegador
-        
-        // Limpia visualmente el mapa (Leaflet)
-        polyline.setLatLngs([]);
-        map.eachLayer((layer) => {
-            if (layer instanceof L.Marker) map.removeLayer(layer);
-        });
-        
-        actualizarTablaRutas(); // Refresca la tabla (quedará vacía)
-        console.log("Estado de la aplicación reiniciado.");
+    if (confirm("¿Borrar todo?")) {
+        listaTours = [];
+        localStorage.removeItem('itinerario_temporal');
+        location.reload();
     }
 }

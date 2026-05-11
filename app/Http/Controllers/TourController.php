@@ -58,8 +58,8 @@ class TourController extends Controller
     private function validateTourPayload(Request $request): array
     {
         // 1. Marshalling: Si el JS envía un string JSON, lo inyectamos como array en 'puntos'
-        if ($request->has('puntos_json') && is_string($request->input('puntos_json'))) {
-            $request->merge(['puntos' => json_decode($request->input('puntos_json'), true)]);
+        if ($request->has('itinerario_temporal') && is_string($request->input('itinerario_temporal'))) {
+            $request->merge(['puntos' => json_decode($request->input('itinerario_temporal'), true)]);
         }
 
         return $request->validate([

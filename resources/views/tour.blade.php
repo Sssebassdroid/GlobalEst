@@ -56,3 +56,6 @@
         </form>
     </div>
 @endsection
+@push('scripts')
+    @vite(['resources/js/tour.js'])
+@endpush
