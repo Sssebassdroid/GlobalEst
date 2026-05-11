@@ -81,9 +81,6 @@ class TourController extends Controller
         ]);
     }
 
-    /**
-     * Publica un Tour (Flujo 100% Stateless).
-     */
     public function add(Request $request)
 {
     Log::info('Procesando creación de tour Stateless.', ['user_id' => auth()->id()]);
@@ -119,16 +116,12 @@ class TourController extends Controller
         });
 
         Log::info('Tour publicado con éxito.', ['tour_id' => $tour->id_tour]);
-        return view('my-tours', ['success' => '¡Tour creado exitosamente!', 'tours' => Tour::all()]);
-
+        return redirect()->route('tour.index')->with('success', '¡Tour creado exitosamente!');
     } catch (\Exception $e) {
         Log::error('Fallo crítico en creación de Tour.', ['msg' => $e->getMessage()]);
         return back()->withInput()->with('error', 'Hubo un problema al guardar el tour.');
     }
 }
-    /**
-     * Vincula las categorías (Grado 3).
-     */
     protected function processTourCategories(Tour $tour, string $jsonData)
     {
         $categoryNames = json_decode($jsonData, true);
@@ -147,8 +140,5 @@ class TourController extends Controller
         }
     }
 
-    /**
-     * Construye el itinerario delegando la ubicación al modelo City.
-     */
     
 }

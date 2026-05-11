@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmPass = document.getElementById('confirm-password');
     const mensajeError = document.getElementById('contenedor-errores');
 
-    // Solo ejecutamos si estamos en la página que tiene estos elementos (Login)
     if (tipoRegistro && inputUsername && inputEmail) {
         inputEmail.style.display = 'none'; // Estado inicial
 
@@ -19,8 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formularioRegistro && pass && confirmPass) {
         comparePasswordsOnRegister();
     }
-
-
 
     function manageLoginOption(){
             tipoRegistro.addEventListener('change', (event) => {

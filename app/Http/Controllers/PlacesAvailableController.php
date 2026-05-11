@@ -22,6 +22,7 @@ class PlacesAvailableController extends Controller
     public function processSelection(Request $request)
     {
         try {
+            
             $puntos = json_decode($request->input('itinerario_temporal'), true);
 
             if (!$puntos || count($puntos) === 0) {

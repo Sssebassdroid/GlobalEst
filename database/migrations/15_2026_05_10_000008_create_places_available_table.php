@@ -13,8 +13,8 @@ return new class extends Migration
     {
      Schema::create('places_available', function (Blueprint $table) {
     $table->id('id_place');
-    $table->string('name', 100);
-    $table->string('display_name', 255);
+    $table->text('name');
+    $table->text('display_name');
     $table->decimal('latitude', 10, 8);
     $table->decimal('longitude', 11, 8);
     $table->float('importance')->nullable();

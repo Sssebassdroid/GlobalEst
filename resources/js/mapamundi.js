@@ -22,7 +22,6 @@ function customIcon(posicion){
     });
 }
 
-// Lógica de geocodificación y marcadores (Se mantiene igual)
 async function createMarker(lat, long) {
     const newCoord = new Coordenada(lat, long);
     if (!newCoord.isValid()) return;
@@ -45,7 +44,6 @@ async function createMarker(lat, long) {
     
     listaTours.push(newPlace);
     
-    // ¡PASO NECESARIO!: Actualizar el almacén cada vez que añadimos un punto
     localStorage.setItem('itinerario_temporal', JSON.stringify(listaTours));
     
     polyline.addLatLng([lat, long]);
@@ -64,7 +62,6 @@ function actualizarTablaVistaPrevia() {
     `).join('');
 }
 
-// PERSISTENCIA: La única responsabilidad de este botón es guardar en LocalStorage
 if (formConfirmarRuta) {
     formConfirmarRuta.addEventListener('submit', function(e) {
         const datos = localStorage.getItem('itinerario_temporal');
