@@ -8,10 +8,11 @@ class RoleFactory extends Factory
 {
     protected $model = Role::class;
 
+
     public function definition(): array
     {
         return [
-            'type' => fake()->unique()->word(),
+            'type' => $this->faker->name(),
         ];
     }
 }

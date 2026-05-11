@@ -24,6 +24,6 @@ class DashboardController extends Controller
         }
 
         Log::info('Usuario normal [' . $user->id_user . '] redirigido a sus viajes.');
-        return view('my-trips');
+        return redirect()->route('tourist.trips'); // Redirige a /my-trips
     }
 }
