@@ -48,3 +48,10 @@
         </div>
     </div>
 @endsection
+
+@if(session('success'))
+    <script>
+        localStorage.removeItem('itinerario_temporal');
+        console.log('Borrador de tour limpiado con éxito.');
+    </script>
+@endif

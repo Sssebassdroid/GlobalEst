@@ -30,12 +30,12 @@ class User extends Authenticatable
 
     public function roleType()
     {
-        return $this->belongsTo(Role::class, 'role', 'id_role');
+        return $this->belongsTo(Role::class, 'role_id', 'id_role');
     }
 
     public function agencia(): HasOne
     {
-        return $this->hasOne(Agency::class, 'admin', 'id_user');
+        return $this->hasOne(Agency::class, 'user_id', 'id_user');
     }
 
     public function isBusiness()

@@ -161,34 +161,5 @@ class TourController extends Controller
     /**
      * Construye el itinerario delegando la ubicación al modelo City.
      */
-    protected function processItinerary(int $tourId, array $puntos)
-    {
-        foreach ($puntos as $index => $punto) {
-            
-            // Delegamos la resolución de la jerarquía geográfica al Modelo City
-            $cityId = City::resolveUbication($punto);
-
-            // Inserción o actualización del lugar exacto
-            $lugarDB = PlaceAvailable::updateOrCreate(
-                ['display_name' => $punto['display_name']], 
-                [
-                    'name'      => $punto['name'],
-                    'osm_id'    => $punto['osm_id'],
-                    'osm_type'  => $punto['osm_type'],
-                    'latitude'  => $punto['lat'],
-                    'longitude' => $punto['long'],
-                    'city_id'   => $cityId
-                ]
-            );
-
-            // Inserción en la tabla pivote del itinerario
-            DB::table('place_tour')->insert([
-                'tour_id'        => $tourId,
-                'place_id'       => $lugarDB->id_place,
-                'order_position' => $index + 1,
-                'created_at'     => now(),
-                'updated_at'     => now(),
-            ]);
-        }
-    }
+    
 }

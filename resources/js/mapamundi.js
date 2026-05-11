@@ -127,26 +127,22 @@ function actualizarTablaRutas() {
 
 if (formConfirmarRuta) {
     formConfirmarRuta.addEventListener('submit', function(e) {
-        // 1. Verificamos que haya datos en nuestro array global 'listaTours'
         if (listaTours.length === 0) {
             e.preventDefault();
-            alert("Debes seleccionar al menos un lugar para tu tour en Perugia.");
+            alert("Debes seleccionar al menos un lugar.");
             return;
         }
 
-        // 2. Localizamos el input oculto
-        const puntosInput = document.getElementById('puntos-json');
-        
+        const puntosInput = document.getElementById('itinerario-temporal');
         if (puntosInput) {
-            // Marshalling: Convertimos el array de objetos Lugar a una cadena JSON
-            puntosInput.value = JSON.stringify(listaTours);
-            console.log("Itinerario serializado listo para enviar.");
-        } else {
-            console.error("Error técnico: No se encontró el elemento #puntos-json en el DOM.");
-            e.preventDefault();
+            const itinerarioTemporal = JSON.stringify(listaTours);
+            puntosInput.value = itinerarioTemporal;
+            
+            // ¡ESTA ES LA LÍNEA CRÍTICA!
+            localStorage.setItem('itinerario_temporal', itinerarioTemporal); 
+            
+            console.log("Datos guardados en LocalStorage y listos para enviar.");
         }
-        
-        // El formulario se enviará de forma natural al controlador de Laravel
     });
 }
 

@@ -45,30 +45,28 @@ class PlacesAvailableController extends Controller
      * Centralizamos aquí la lógica para evitar duplicidad en TourController.
      */
     public static function persistItinerary(int $tourId, array $puntos): void
-    {
-        foreach ($puntos as $index => $punto) {
-            $cityId = City::resolveUbication($punto);
+{
+    foreach ($puntos as $index => $punto) {
+        $cityId = City::resolveUbication($punto);
 
-            $lugarDB = PlaceAvailable::updateOrCreate(
-                ['osm_id' => $punto['osm_id']], 
-                [
-                    'name'         => $punto['name'],
-                    'display_name' => $punto['display_name'] ?? $punto['name'],
-                    'latitude'     => $punto['lat'],
-                    'longitude'    => $punto['long'],
-                    'osm_type'     => $punto['osm_type'],
-                    'importance'   => $punto['importance'] ?? 0,
-                    'city_id'      => $cityId
-                ]
-            );
+        $lugarDB = PlaceAvailable::updateOrCreate(
+            ['osm_id' => $punto['osm_id']], 
+            [
+                'name'         => $punto['name'],
+                'display_name' => $punto['display_name'],
+                'latitude'     => $punto['lat'],
+                'longitude'    => $punto['long'],
+                'osm_type'     => $punto['osm_type'],
+                'city_id'      => $cityId // Naming correcto de la FK
+            ]
+        );
 
-            DB::table('place_tour')->insert([
-                'tour_id'        => $tourId,
-                'place_id'       => $lugarDB->id_place,
-                'order_position' => $index + 1,
-                'created_at'     => now(),
-                'updated_at'     => now(),
-            ]);
-        }
+        DB::table('place_tour')->insert([
+            'tour_id'        => $tourId,
+            'place_id'       => $lugarDB->id_place,
+            'order_position' => $index + 1,
+            'created_at'     => now(),
+        ]);
     }
+}
 }
