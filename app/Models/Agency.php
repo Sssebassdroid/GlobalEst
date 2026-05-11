@@ -16,7 +16,7 @@ class Agency extends Model
 
     protected $fillable = [
         'agency_name',
-        'admin',
+        'user_id',
     ];
 
     public function administrador(): BelongsTo

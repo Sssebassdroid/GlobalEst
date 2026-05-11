@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\City;
+use App\Models\PlaceAvailable;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PlacesAvailableController extends Controller
 {
@@ -13,123 +15,60 @@ class PlacesAvailableController extends Controller
         return view('add_place');
     }
 
-
-    public function validatePlaceAvailable(Request $request)
-{
-    try {
-        // Ejecutamos la validación
-        $validated = $request->validate([
-            'name'         => 'required|string|max:255|unique:places_available,name',
-            'display_name' => 'required|string',
-            'osm_id'       => 'required|integer|unique:places_available,osm_id',
-            'osm_type'     => 'required|string|max:50',
-            'latitud'      => 'required|numeric|between:-90,90',
-            'longitud'     => 'required|numeric|between:-180,180',
-            'city'         => 'required|integer|exists:city,id_city', // ¡Importante validar la FK!
-        ]);
-
-        // Si la validación pasa, creamos una instancia (sin guardar todavía) o la devolvemos
-        // En ingeniería, esto se llama "Data Transfer Object" (DTO) simplificado
-        return new \App\Models\PlaceAvailable([
-            'name'         => $validated['name'],
-            'display_name' => $validated['display_name'],
-            'osm_id'       => $validated['osm_id'],
-            'osm_type'     => $validated['osm_type'],
-            'latitude'     => $validated['latitud'],  // Ojo: en tu esquema es 'latitude'
-            'longitude'    => $validated['longitud'], // Ojo: en tu esquema es 'longitude'
-            'city'         => $validated['city'],
-        ]);
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        // Si falla, registramos el log de error antes de que Laravel redirija
-        Log::error("Fallo al validar un nuevo lugar en Perugia", [
-            'usuario_id' => auth()->id(),
-            'errores'    => $e->errors(),
-            'input'      => $request->all()
-        ]);
-
-        // Re-lanzamos la excepción para que Laravel maneje la respuesta al cliente
-        throw $e;
-    }
-}
-
-
-    public function store(Request $request)
+    /**
+     * Recibe la selección y la envía a la siguiente fase.
+     * Ya NO usa session. El frontend debe manejar el paso de datos.
+     */
+    public function processSelection(Request $request)
     {
-        $validated = $request->validate([
-            'name'         => 'required|string|max:255|unique:places_available,name',
-            'display_name' => 'required|string',
-            'osm_id'       => 'required|integer|unique:places_available,osm_id',
-            'osm_type'     => 'required|string|max:50',
-            'latitud'      => 'required|numeric|between:-90,90',
-            'longitud'     => 'required|numeric|between:-180,180',
-        ]);
+        try {
+            $puntos = json_decode($request->input('puntos_json'), true);
 
-        PlaceAvailable::create($validated);
+            if (!$puntos || count($puntos) === 0) {
+                Log::warning('Intento de envío de itinerario vacío.', ['user_id' => auth()->id()]);
+                return response()->json(['status' => 'error', 'message' => 'No hay puntos seleccionados.'], 400);
+            }
 
-        return redirect()->back()->with('success', '¡Lugar guardado en el sistema correctamente!');
-    }
+            Log::info('Itinerario validado en cliente listo para persistencia.', ['puntos_count' => count($puntos)]);
+
+            return redirect('/create-tour')->with('success', 'Lugares procesados correctamente!');
 
 
-   public function saveOnSession(Request $request)
-    {
-        // 1. Decodificamos el JSON que envía tu JS
-        $puntos = json_decode($request->input('puntos_json'), true);
-
-        // 2. Validación rápida
-        if (!$puntos || count($puntos) === 0) {
-            return back()->with('error', 'No se han seleccionado lugares.');
+        } catch (\Exception $e) {
+            Log::error('Fallo al procesar selección de lugares: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Error al procesar los datos.'], 500);
         }
-
-        // 3. Guardamos en sesión
-        session(['lugares_seleccionados' => $puntos]);
-
-        // 4. Redirigimos a la fase final
-        return redirect()->route('tour.create');
     }
 
+    /**
+     * Método estático de utilidad para persistir el itinerario.
+     * Centralizamos aquí la lógica para evitar duplicidad en TourController.
+     */
+    public static function persistItinerary(int $tourId, array $puntos): void
+    {
+        foreach ($puntos as $index => $punto) {
+            $cityId = City::resolveUbication($punto);
 
+            $lugarDB = PlaceAvailable::updateOrCreate(
+                ['osm_id' => $punto['osm_id']], 
+                [
+                    'name'         => $punto['name'],
+                    'display_name' => $punto['display_name'] ?? $punto['name'],
+                    'latitude'     => $punto['lat'],
+                    'longitude'    => $punto['long'],
+                    'osm_type'     => $punto['osm_type'],
+                    'importance'   => $punto['importance'] ?? 0,
+                    'city_id'      => $cityId
+                ]
+            );
 
-
-
-    protected function persistItineraryFromSession(int $tourId)
-{
-    $puntos = session('lugares_seleccionados');
-
-    foreach ($puntos as $index => $punto) {
-        
-        // A. Normalización de Ciudad
-        $nombreCiudad = trim($punto['city'] ?? 'Unknown');
-
-        $ciudadDB = \App\Models\City::firstOrCreate(
-            ['name' => $nombreCiudad],
-            ['country' => 1 ] 
-        );
-
-        // B. Upsert del Lugar con datos de la API
-        $lugarDB = \App\Models\PlaceAvailable::updateOrCreate(
-            ['osm_id' => $punto['osm_id']], 
-            [
-                'name'         => $punto['name'],
-                'display_name' => $punto['display_name'] ?? $punto['name'],
-                'latitude'     => $punto['lat'],
-                'longitude'    => $punto['long'],
-                'osm_type'     => $punto['osm_type'] ?? null,
-                'osm_ id'     => $punto['osm_id'] ?? null,
-                'importance'   => $punto['importance'] ?? 0,
-                'city'         => $ciudadDB->id_city
-            ]
-        );
-
-        // C. Registro en el itinerario del Tour
-        \DB::table('places_tour')->insert([
-            'tour'           => $tourId,
-            'places'         => $lugarDB->id_place,
-            'order_position' => $index + 1
-        ]);
+            DB::table('place_tour')->insert([
+                'tour_id'        => $tourId,
+                'place_id'       => $lugarDB->id_place,
+                'order_position' => $index + 1,
+                'created_at'     => now(),
+                'updated_at'     => now(),
+            ]);
+        }
     }
-}
-    
-
-
 }

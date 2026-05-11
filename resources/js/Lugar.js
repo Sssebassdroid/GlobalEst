@@ -10,7 +10,5 @@ export class Lugar extends Coordenada{
         this.city = city;
         this.osm_id = osm_id;
         this.osm_type = osm_type;
-        
-    
     }
 }

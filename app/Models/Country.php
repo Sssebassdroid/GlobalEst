@@ -15,7 +15,7 @@ class Country extends Model
 
     protected $fillable = [
         'name',
-        'continent', // FK que apunta a id_continent
+        'continent_id', // FK que apunta a id_continent
     ];
 
     /**

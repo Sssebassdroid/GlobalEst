@@ -1,24 +1,14 @@
 import { Coordenada } from './Coord.js';
 import { Lugar } from './Lugar.js';
-
-var map = L.map('mapamundi', {
-    
-    attributionControl: false 
-
-}).setView([30, 0], 2);
-
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-
+import { map } from './start-mapamundi.js'; 
 
 
 
 
 const placeName = document.getElementById('place-name');
 const formulario = document.querySelector('.buscador');
-let listaTours = []
-
+const formConfirmarRuta = document.getElementById('form-confirmar-ruta');
+let listaTours = [];
 
 
 const polyline = L.polyline([], {
@@ -89,7 +79,6 @@ function createMarkerOnClick(){
 }
 
 
-// ... (resto de tu código anterior igual)
 
 async function createMarker(lat, long) {
     const newCoord = new Coordenada(lat, long);
@@ -100,11 +89,10 @@ async function createMarker(lat, long) {
 
     // Mapeo de datos asegurando tipos correctos para la clase Lugar
     const id = data.place_id || Date.now();
-    const name = data.name || "Vía no registrada";
-    // Usamos road o display_name como dirección amigable
+    const name = data.name || data.display_name;
     const display_name = data.address?.road || data.display_name || "Dirección desconocida";
     const importance = data.importance || 0;
-    const city = data.address?.city || data.address?.town || data.address?.village || "Perugia";
+    const city = data.address?.city || data.address?.town || data.address?.village || "Desconocida";
     const osm_type = data.osm_type;
     const osm_id = data.osm_id;
 
@@ -136,8 +124,6 @@ function actualizarTablaRutas() {
     });
 }
 
-// Corregido: Referencia al array correcto 'listaTours'
-const formConfirmarRuta = document.getElementById('form-confirmar-ruta');
 
 if (formConfirmarRuta) {
     formConfirmarRuta.addEventListener('submit', function(e) {
@@ -172,4 +158,34 @@ if (formulario) {
         e.preventDefault();
         getCoordsByName(placeName.value);
     });
+}
+
+// Al cargar la página de creación
+document.addEventListener('DOMContentLoaded', () => {
+    renderItinerary();
+});
+
+function renderItinerary() {
+    // 1. Recuperamos de localStorage (o de tu variable global listaTours)
+    const puntos = JSON.parse(localStorage.getItem('itinerario_temporal')) || [];
+    const tabla = document.getElementById('cuerpo-tabla');
+    const inputOculto = document.getElementById('puntos-json');
+
+    if (!tabla) return;
+
+    tabla.innerHTML = '';
+
+    puntos.forEach((lugar, index) => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${lugar.display_name}</td>
+        `;
+        tabla.appendChild(fila);
+    });
+
+    // 2. Sincronizamos el input oculto que recibirá el controlador
+    if (inputOculto) {
+        inputOculto.value = JSON.stringify(puntos);
+    }
 }

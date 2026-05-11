@@ -14,6 +14,8 @@ class LoginController extends Controller
         return view('login');
     }
 
+    
+
     public function login(Request $request){
     $credentials = [];
     

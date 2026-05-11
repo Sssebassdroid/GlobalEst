@@ -13,14 +13,12 @@ class CategoryTour extends Model
 
     public function tours(): HasMany
     {
-        // Relacionamos con el modelo Tour usando la FK 'category_tour'
-        return $this->hasMany(Tour::class, 'category_tour', 'id_category_tour');
+        return $this->hasMany(Tour::class, 'tour', 'id_tour');
     }
 
     public function categories(): HasMany
     {
-        // Relacionamos con el modelo Tour usando la FK 'category_tour'
-        return $this->hasMany(Category::class, 'category', 'id_category_tour');
+        return $this->hasMany(Category::class, 'category', 'id_category');
     }
 
 

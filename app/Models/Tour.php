@@ -29,12 +29,12 @@ class Tour extends Model
 
 public function agencia(): BelongsTo
 {
-    return $this->belongsTo(Agency::class, 'agency', 'id_agency');
+    return $this->belongsTo(Agency::class, 'agency_id', 'id_agency');
 }
 
-    public function categorias()
-    {
-        return $this->belongsToMany(Category::class, 'category_tour', 'tour', 'category');
-    }
+public function categories(): BelongsToMany
+{
+    return $this->belongsToMany(Category::class, 'category_tour', 'tour_id', 'category_id');
+}
 
 }

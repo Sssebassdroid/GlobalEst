@@ -26,9 +26,9 @@
                             <td>{{ $tour->tour_price }}€</td>
                             <td>{{ $tour->estimated_duration }}</td>
                             <td>
-                                @foreach($tour->categorias as $cat)
+                                @foreach($tour->categories as $categories)
                                     <span">
-                                        {{ $cat->name }}
+                                        {{ $categories->name }}
                                     </span>
                                 @endforeach
                             </td>
