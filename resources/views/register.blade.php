@@ -19,7 +19,7 @@
             <input id="password" type="password" name="password" placeholder="Contraseña segura" required>
             <input id="confirm-password" type="password" name="password_confirmation" placeholder="Confirma contraseña..." required>
             
-            <div id="contenedor-errores" style="display: none; color: red; margin-bottom: 10px;">
+            <div id="contenedor-errores">
     {{-- Aquí JS insertará el mensaje si las claves no coinciden --}}
     <ul id="lista-errores-js"></ul>
 
@@ -44,10 +44,10 @@
 
             <label for="tipo-usuario">¿Qué tipo de usuario eres?</label>
             {{-- El name debe ser 'role' para que coincida con tu base de datos --}}
-            <select name="role" id="tipo-usuario">
+            <select name="role_id" id="tipo-usuario">
                 {{-- Usa los IDs reales de tu tabla 'role' (ej: 1 para Empresa, 2 para Personal) --}}
-                <option value="1">Empresa</option>
-                <option value="2">Personal</option>
+                <option value=1>Empresa</option>
+                <option value=2>Personal</option>
             </select>
             
             <input type="submit" value="Registrarme">

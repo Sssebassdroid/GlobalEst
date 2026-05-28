@@ -17,4 +17,10 @@ class Category extends Model
         'name',
     ];
 
+
+    public function tours()
+{
+    return $this->belongsToMany(Tour::class, 'category_tour', 'category_id', 'tour_id');
+}
+
 }

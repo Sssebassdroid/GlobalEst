@@ -18,7 +18,7 @@ class PlaceAvailable extends Model
         'latitude',  // Corregido a inglés según tu esquema
         'longitude', // Corregido a inglés según tu esquema
         'importance',
-        'city'       // FK hacia la tabla city
+        'city_id'       // FK hacia la tabla city
     ];
 
 

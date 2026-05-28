@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+
 class RegisterControllerTest extends TestCase
 {
     use RefreshDatabase; // Fundamental para que cada test empiece de cero
@@ -22,7 +23,7 @@ class RegisterControllerTest extends TestCase
             'password' => 'password123',
             'password_confirmation' => 'password123',
             'role' => 2,
-        ];
+        ];  
 
         $response = $this->post('/register', $datos);
 

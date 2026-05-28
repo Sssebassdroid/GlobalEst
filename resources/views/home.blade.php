@@ -16,6 +16,8 @@
         </form>
     </div>
 
+
+    
     <div id="mapamundi-holder">
         <div id="mapamundi"></div>
     </div>

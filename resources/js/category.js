@@ -12,7 +12,6 @@ function selectCategory() {
     selectNewCategory();
 }
 
-
 function selectExistingCategory(){
     categoryInput.addEventListener('input', function() {
     
@@ -35,7 +34,6 @@ function selectExistingCategory(){
     });
 }
 
-
 function selectNewCategory(){
     categoryInput.addEventListener('keydown', function(event) {
 
@@ -54,12 +52,6 @@ function selectNewCategory(){
         }
     });
 }
-
-
-
-
-
-
 
 function procesarNuevoTag(valor) {
     if (!tagsArray.includes(valor)) {
@@ -95,7 +87,6 @@ function updateHiddenInput() {
     hiddenInput.value = JSON.stringify(tagsArray);
 }
 
-// Función global para eliminar tags
 window.removeCategory = function(name, element) {
     tagsArray = tagsArray.filter(t => t !== name);
     
@@ -112,7 +103,6 @@ window.removeCategory = function(name, element) {
     updateHiddenInput();
 };
 
-// Iniciar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     selectCategory();
 

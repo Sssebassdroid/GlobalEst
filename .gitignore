@@ -26,7 +26,7 @@
 /public/build/
 /public/storage
 /public/hot
-/storage/*.key
+/storage/*.key  
 
 # Bloqueo estricto de archivos sensibles y dependencias
 .env

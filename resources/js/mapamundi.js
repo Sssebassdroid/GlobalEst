@@ -1,24 +1,12 @@
 import { Coordenada } from './Coord.js';
 import { Lugar } from './Lugar.js';
+import { map } from './start-mapamundi.js'; 
 
-var map = L.map('mapamundi', {
-    
-    attributionControl: false 
-
-}).setView([30, 0], 2);
-
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-
-
-
-
+const formulario = document.getElementById('form-buscador');
+const formConfirmarRuta = document.getElementById('form-confirmar-ruta');
+let listaTours = [];
 
 const placeName = document.getElementById('place-name');
-const formulario = document.querySelector('.buscador');
-let listaTours = []
-
 
 
 const polyline = L.polyline([], {
@@ -27,27 +15,80 @@ const polyline = L.polyline([], {
     opacity: 0.8
 }).addTo(map);
 
-
-
-
-
 function customIcon(posicion){
-    const icon = L.divIcon({
+    return L.divIcon({
         className: 'number-icon',
         html: `<div>${posicion}</div>`,
         iconSize: [25, 25],
         iconAnchor: [12, 12]
     });
-    return icon;
 }
 
+async function createMarker(lat, long) {
+    const newCoord = new Coordenada(lat, long);
+    if (!newCoord.isValid()) return;
+
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}`, {
+        headers: { 'Accept-Language': 'es' }
+    });
+    const data = await response.json();
+
+    const newPlace = new Lugar(
+        data.place_id || Date.now(),
+        data.name || data.display_name,
+        data.address?.road || data.display_name || "Dirección desconocida",
+        lat, long,
+        data.importance || 0,
+        data.address?.city || data.address?.town || "Desconocida",
+        data.osm_type,
+        data.osm_id
+    );
+    
+    listaTours.push(newPlace);
+    
+    localStorage.setItem('itinerario_temporal', JSON.stringify(listaTours));
+    
+    polyline.addLatLng([lat, long]);
+    L.marker([lat, long], { icon: customIcon(listaTours.length) }).addTo(map).bindPopup(newPlace.display_name);
+    actualizarTablaVistaPrevia();
+}
+
+function actualizarTablaVistaPrevia() {
+    const cuerpo = document.getElementById('cuerpo-tabla');
+    if (!cuerpo) return;
+    cuerpo.innerHTML = listaTours.map((lugar, index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${lugar.name}</td>
+        </tr>
+    `).join('');
+}
+
+if (formConfirmarRuta) {
+    formConfirmarRuta.addEventListener('submit', function(e) {
+        const datos = localStorage.getItem('itinerario_temporal');
+        const inputHidden = document.getElementById('itinerario-temporal');
+
+        if (!datos || JSON.parse(datos).length === 0) {
+            e.preventDefault();
+            alert("No hay puntos seleccionados.");
+            return;
+        }
+
+        // ¡PASO CRÍTICO!: Inyectar el JSON en el input que leerá Laravel
+        inputHidden.value = datos; 
+    });
+}
 
 async function getCoordsByName(namePlace){
     try{
+        console.log(namePlace);
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(namePlace)}`);
 
+        console.log(response);
         const data = await response.json();
 
+        
         if(data.length > 0){   
             const firstResult = data[0];
             const lat = firstResult.lat;
@@ -65,111 +106,19 @@ async function getCoordsByName(namePlace){
     
 }
 
+formulario.addEventListener('submit', function(event){
+    event.preventDefault();
+    name = placeName.value;
+    getCoordsByName(name);
 
-async function getDataFromCoords(coordenada) {
-    try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coordenada.getLat}&lon=${coordenada.getLong}`, {
-            headers: {
-                'Accept-Language': 'es' 
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Error en geocodificación inversa:", error);
-        return null;
+});
+
+map.on('click', (e) => createMarker(e.latlng.lat, e.latlng.lng));
+
+window.limpiarMapa = function() {
+    if (confirm("¿Borrar todo?")) {
+        listaTours = [];
+        localStorage.removeItem('itinerario_temporal');
+        location.reload();
     }
-}
-
-
-function createMarkerOnClick(){
-   map.on('click', function(e) {
-        createMarker(e.latlng.lat, e.latlng.lng);
-    });
-}
-
-
-// ... (resto de tu código anterior igual)
-
-async function createMarker(lat, long) {
-    const newCoord = new Coordenada(lat, long);
-    if (!newCoord.isValid()) return null;
-
-    const data = await getDataFromCoords(newCoord);
-    if (!data) return;
-
-    // Mapeo de datos asegurando tipos correctos para la clase Lugar
-    const id = data.place_id || Date.now();
-    const name = data.name || "Vía no registrada";
-    // Usamos road o display_name como dirección amigable
-    const display_name = data.address?.road || data.display_name || "Dirección desconocida";
-    const importance = data.importance || 0;
-    const city = data.address?.city || data.address?.town || data.address?.village || "Perugia";
-    const osm_type = data.osm_type;
-    const osm_id = data.osm_id;
-
-    const newPlace = new Lugar(id, name, display_name, lat, long, importance, city, osm_type, osm_id);
-    
-    listaTours.push(newPlace);
-    
-    // UI: Marcador y Polilínea
-    const icon = customIcon(listaTours.length);
-    polyline.addLatLng([lat, long]);
-    L.marker([lat, long], { icon: icon }).addTo(map).bindPopup(display_name);
-    
-    actualizarTablaRutas();
-}
-
-function actualizarTablaRutas() {
-    const rutas = document.getElementById('cuerpo-tabla');
-    if (!rutas) return;
-
-    rutas.innerHTML = ''; 
-
-    listaTours.forEach((lugar, index) => {
-        const fila = document.createElement('tr');
-        fila.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${lugar.name}</td>
-        `;
-        rutas.appendChild(fila);
-    });
-}
-
-// Corregido: Referencia al array correcto 'listaTours'
-const formConfirmarRuta = document.getElementById('form-confirmar-ruta');
-
-if (formConfirmarRuta) {
-    formConfirmarRuta.addEventListener('submit', function(e) {
-        // 1. Verificamos que haya datos en nuestro array global 'listaTours'
-        if (listaTours.length === 0) {
-            e.preventDefault();
-            alert("Debes seleccionar al menos un lugar para tu tour en Perugia.");
-            return;
-        }
-
-        // 2. Localizamos el input oculto
-        const puntosInput = document.getElementById('puntos-json');
-        
-        if (puntosInput) {
-            // Marshalling: Convertimos el array de objetos Lugar a una cadena JSON
-            puntosInput.value = JSON.stringify(listaTours);
-            console.log("Itinerario serializado listo para enviar.");
-        } else {
-            console.error("Error técnico: No se encontró el elemento #puntos-json en el DOM.");
-            e.preventDefault();
-        }
-        
-        // El formulario se enviará de forma natural al controlador de Laravel
-    });
-}
-
-
-createMarkerOnClick();
-
-if (formulario) {
-    formulario.addEventListener('submit', (e) => {
-        e.preventDefault();
-        getCoordsByName(placeName.value);
-    });
 }

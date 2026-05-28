@@ -16,12 +16,12 @@ class Agency extends Model
 
     protected $fillable = [
         'agency_name',
-        'admin',
+        'user_id',
     ];
 
     public function administrador(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'admin', 'id_user');
+        return $this->belongsTo(User::class, 'user_id', 'id_user');
     }
 
     public function tours(): HasMany

@@ -9,6 +9,7 @@ use App\Http\Controllers\PlacesAvailableController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 
+// Rutas Públicas
 
 Route::get('/',[HomeController::class, 'display']) ->name('home.display');
 
@@ -41,7 +42,7 @@ Route::middleware(['auth'])->group(function () {
 // Rutas exclusivas de Agencia
 Route::middleware(['auth', 'business'])->group(function () {
     Route::get('/places', [PlacesAvailableController::class, 'display'])->name('places.index');
-    Route::post('/places', [PlacesAvailableController::class, 'saveOnSession'])->name('places.add');
+    Route::post('/places', [PlacesAvailableController::class, 'processSelection'])->name('places.add');
 
     Route::get('/create-tour', [CategoryController::class, 'display'])->name('tour.create');
     Route::post('/create-tour', [TourController::class, 'add'])->name('tour.add');

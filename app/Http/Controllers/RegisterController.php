@@ -27,15 +27,14 @@ class RegisterController extends Controller
                 'second_last_name' => $validated['second_last_name'],
                 'email'            => $validated['email'],
                 'password'         => Hash::make($validated['password']), 
-                
-                'role'             => $validated['role'],
+                'role_id'             => $validated['role_id'],
             ]);
 
             Log::info("Nuevo usuario creado correctamente", [
                 'id_user'  => $user->id_user,
                 'username' => $user->username,
                 'email'    => $user->email,
-                'role'     => $user->role,
+                'role_id'     => $user->role_id,
             ]);
 
             return redirect('/login')->with('success', '¡Cuenta creada correctamente!');
@@ -57,7 +56,7 @@ class RegisterController extends Controller
             'second_last_name' => 'nullable|string|max:50',
             'email'            => 'required|email|max:50|unique:user,email',
             'password'         => 'required|string|min:8|confirmed',
-            'role'             => 'required|integer', 
+            'role_id'             => 'required|integer', 
         ]);
     } catch (\Illuminate\Validation\ValidationException $e) {
         Log::warning("Fallo en validación de registro", [

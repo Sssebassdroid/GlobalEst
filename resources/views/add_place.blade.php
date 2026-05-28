@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Inicio')
+@section('title', 'Seleccionar Itinerario')
 
 @section('content')
-    <p id="search-tagline">Añade un lugar para tu empresa :)</p>
+    <p id="search-tagline">Añade lugares para tu nuevo Tour :)</p>
 
     <div id="agregar-rutas">
         
@@ -14,8 +14,8 @@
         <div id="ventana-rutas-global">
             <div id="contenedor-buscador">
                 
-                <form action="/buscar" method="get" class="buscador">
-                    <input id="place-name" type="text" name="buscador" class="buscar" placeholder="Via Bontempi 22">
+                <form action="" method="get" class="buscador" id="form-buscador">
+                    <input id="place-name" type="text" name="buscador" class="buscar" placeholder="Ej: Via Bontempi 22, Perugia">
                     <button type="submit" id="lupa">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -29,24 +29,31 @@
                         </tr>
                     </thead>
                     <tbody id="cuerpo-tabla">
+                        {{-- Se rellena dinámicamente con JS --}}
                     </tbody>
                 </table>
 
                 <div id="opciones-ruta">
-    <form id="form-confirmar-ruta" action="{{ route('places.add') }}" method="POST">
-        @csrf
-        <input type="hidden" name="puntos_json" id="puntos-json">
-        <button type="submit" class="btn-confirm">Confirmar Itinerario</button>
-    </form>
-    <button type="button" class="btn-cancel" onclick="limpiarMapa()">Eliminar Todo</button>
-</div>
+                    {{-- El action apunta a processSelection, que solo redirige --}}
+                    <form id="form-confirmar-ruta" action="{{ route('places.add') }}" method="POST">
+                        @csrf
+                        {{-- ID unificado: itinerario-temporal para que el JS lo encuentre --}}
+                        <input type="hidden" name="itinerario_temporal" id="itinerario-temporal">
+                        <button type="submit" class="btn-confirm">Confirmar Itinerario</button>
+                    </form>
+                    <button type="button" class="btn-cancel" onclick="limpiarMapa()">Eliminar Todo</button>
+                </div>
 
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
             </div>
         </div>
-
-
     </div>
 @endsection
 
 @push('scripts')
+    @vite(['resources/js/mapamundi.js'])
 @endpush
