@@ -2,10 +2,12 @@ import { Coordenada } from './Coord.js';
 import { Lugar } from './Lugar.js';
 import { map } from './start-mapamundi.js'; 
 
-const placeName = document.getElementById('place-name');
-const formulario = document.querySelector('.buscador');
+const formulario = document.getElementById('form-buscador');
 const formConfirmarRuta = document.getElementById('form-confirmar-ruta');
 let listaTours = [];
+
+const placeName = document.getElementById('place-name');
+
 
 const polyline = L.polyline([], {
     color: '#2563eb', 
@@ -66,7 +68,7 @@ if (formConfirmarRuta) {
     formConfirmarRuta.addEventListener('submit', function(e) {
         const datos = localStorage.getItem('itinerario_temporal');
         const inputHidden = document.getElementById('itinerario-temporal');
-        
+
         if (!datos || JSON.parse(datos).length === 0) {
             e.preventDefault();
             alert("No hay puntos seleccionados.");
@@ -77,6 +79,39 @@ if (formConfirmarRuta) {
         inputHidden.value = datos; 
     });
 }
+
+async function getCoordsByName(namePlace){
+    try{
+        console.log(namePlace);
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(namePlace)}`);
+
+        console.log(response);
+        const data = await response.json();
+
+        
+        if(data.length > 0){   
+            const firstResult = data[0];
+            const lat = firstResult.lat;
+            const lon = firstResult.lon;
+            map.flyTo([lat, lon], 15); 
+            createMarker(lat, lon);
+        }else{
+            console.warn("No se encontraron coordenadas para esa dirección.");
+        }
+        
+    }
+    catch(error){
+        console.error("Error en la geocodificacion", error)
+    }
+    
+}
+
+formulario.addEventListener('submit', function(event){
+    event.preventDefault();
+    name = placeName.value;
+    getCoordsByName(name);
+
+});
 
 map.on('click', (e) => createMarker(e.latlng.lat, e.latlng.lng));
 

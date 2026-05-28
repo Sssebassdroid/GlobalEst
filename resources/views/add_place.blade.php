@@ -14,7 +14,7 @@
         <div id="ventana-rutas-global">
             <div id="contenedor-buscador">
                 
-                <form action="#" method="get" class="buscador" id="form-buscador">
+                <form action="" method="get" class="buscador" id="form-buscador">
                     <input id="place-name" type="text" name="buscador" class="buscar" placeholder="Ej: Via Bontempi 22, Perugia">
                     <button type="submit" id="lupa">
                         <i class="fa-solid fa-magnifying-glass"></i>
