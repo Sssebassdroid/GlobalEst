@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\PlaceAvailable;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -22,43 +24,51 @@ class PlacesAvailableController extends Controller
     public function processSelection(Request $request)
     {
         try {
-            
-            $puntos = json_decode($request->input('itinerario_temporal'), true);
 
-            if (!$puntos || count($puntos) === 0) {
+            /**
+             * 1. Toma de parámetros los posibles valores de un lugar disponible
+             * 2. Verifica que haya points válidos en la solicitud
+             * 3. Redirige al segundo paso de crear un tour
+             *    guardando en la sesión
+             */
+
+            $points = json_decode($request->input('session_itinerary'), true);
+
+            if (!$points || count($points) === 0) {
                 Log::warning('Intento de envío de itinerario vacío.', ['user_id' => auth()->id()]);
-                return response()->json(['status' => 'error', 'message' => 'No hay puntos seleccionados.'], 400);
+                return response()->json(['status' => 'error', 'message' => 'No hay points seleccionados.'], 400);
             }
 
-            Log::info('Itinerario validado en cliente listo para persistencia.', ['puntos_count' => count($puntos)]);
+            Log::info('Itinerario validado en cliente listo para persistencia.', ['puntos_count' => count($points)]);
 
             return redirect('/create-tour')->with('success', 'Lugares procesados correctamente!');
 
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Fallo al procesar selección de lugares: ' . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => 'Error al procesar los datos.'], 500);
         }
     }
 
     /**
-     * Método estático de utilidad para persistir el itinerario.
+     * Metodo estático de utilidad para persistir el itinerario.
      * Centralizamos aquí la lógica para evitar duplicidad en TourController.
+     * @throws Exception
      */
-public static function persistItinerary(int $tourId, array $puntos): void
+public static function persistItinerary(int $tourId, array $points): void
 {
     try {
-        foreach ($puntos as $index => $punto) {
-            $cityId = City::resolveUbication($punto);
+        foreach ($points as $index => $point) {
+            $cityId = City::resolveUbication($point);
 
-            $lugarDB = PlaceAvailable::updateOrCreate(
-                ['osm_id' => $punto['osm_id']], 
+            $placeDB = PlaceAvailable::updateOrCreate(
+                ['osm_id' => $point['osm_id']],
                 [
-                    'name'         => $punto['name'],
-                    'display_name' => $punto['display_name'],
-                    'latitude'     => $punto['lat'],
-                    'longitude'    => $punto['long'],
-                    'osm_type'     => $punto['osm_type'],
+                    'name'         => $point['name'],
+                    'display_name' => $point['display_name'],
+                    'latitude'     => $point['lat'],
+                    'longitude'    => $point['long'],
+                    'osm_type'     => $point['osm_type'],
                     'city_id'      => $cityId
                 ]
             );
@@ -66,15 +76,15 @@ public static function persistItinerary(int $tourId, array $puntos): void
             // Inserción en tabla pivote con naming de BD correcto
             DB::table('place_tour')->insert([
                 'tour_id'        => $tourId,
-                'place_id'       => $lugarDB->id_place,
+                'place_id'       => $placeDB->id_place,
                 'order_position' => $index + 1,
                 'created_at'     => now(),
             ]);
         }
         Log::info("Itinerario persistido para Tour ID: $tourId");
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         Log::error('Fallo en persistencia de itinerario.', ['error' => $e->getMessage()]);
-        throw $e; 
+        throw $e;
     }
 }
 }

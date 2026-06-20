@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log; // Importante para usar los logs
 
@@ -26,7 +27,7 @@ class RegisterController extends Controller
                 'first_last_name'  => $validated['first_last_name'],
                 'second_last_name' => $validated['second_last_name'],
                 'email'            => $validated['email'],
-                'password'         => Hash::make($validated['password']), 
+                'password'         => Hash::make($validated['password']),
                 'role_id'             => $validated['role_id'],
             ]);
 
@@ -41,7 +42,7 @@ class RegisterController extends Controller
 
         } catch (\Exception $e) {
             Log::error("Error al crear usuario: " . $e->getMessage());
-            
+
             return back()->withInput()->with('error', 'Hubo un error al procesar el registro.');
         }
     }
@@ -56,14 +57,14 @@ class RegisterController extends Controller
             'second_last_name' => 'nullable|string|max:50',
             'email'            => 'required|email|max:50|unique:user,email',
             'password'         => 'required|string|min:8|confirmed',
-            'role_id'             => 'required|integer', 
+            'role_id'             => 'required|integer',
         ]);
     } catch (\Illuminate\Validation\ValidationException $e) {
         Log::warning("Fallo en validación de registro", [
             'datos_enviados' => $request->except('password', 'password_confirmation'),
             'errores' => $e->errors()
         ]);
-        throw $e; 
+        throw $e;
     }
 }
 }

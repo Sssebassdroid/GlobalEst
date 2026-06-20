@@ -13,9 +13,9 @@ class City extends Model
 
     protected $table = 'city';
     protected $primaryKey = 'id_city';
-    
+
     // Si tus migraciones tienen $table->timestamps(), pon esto a true
-    public $timestamps = true; 
+    public $timestamps = true;
 
     protected $fillable = [
         'name',
@@ -30,14 +30,13 @@ class City extends Model
         // 1. Resolvemos Continente
         $continent = Continent::firstOrCreate(['name' => 'Europa']);
 
-        // 2. Resolvemos País
         $countryName = $punto['country_name'] ?? 'País Desconocido';
+
         $country = Country::firstOrCreate(
             ['name' => $countryName],
             ['continent_id' => $continent->id_continent]
         );
 
-        // 3. Resolvemos Ciudad
         $cityName = $punto['city_name'] ?? 'Ciudad Desconocida';
         $city = self::firstOrCreate(
             ['name' => $cityName],

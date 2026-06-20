@@ -7,9 +7,16 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\PlaceAvailable;
 use App\Models\Agency;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StoreTourRequest;
+use App\Actions\CreateTourAction;
+use App\DTOs\TourDTO;
+
 
 class TourController extends Controller
 {
@@ -39,7 +46,7 @@ class TourController extends Controller
                 $tours = Tour::where('agency_id', $agencia->id_agency)->with('categories')->get();
 
                 Log::info('Carga de tours completada.', ['agency_id' => $agencia->id_agency, 'count' => $tours->count()]);
-                
+
                 return view('my-tours', compact('tours'));
 
             } catch (\Exception $e) {
@@ -68,8 +75,8 @@ class TourController extends Controller
             'description'        => 'required|string|max:1000',
             'estimated_duration' => 'required',
             'image'              => 'required|image|max:2048',
-            'categories_data'    => 'required|string', 
-            
+            'categories_data'    => 'required|string',
+
             // 2. Validación estructural de los datos geográficos
             'puntos'             => 'required|array|min:1',
             'puntos.*.lat'       => 'required|numeric',
@@ -81,47 +88,42 @@ class TourController extends Controller
         ]);
     }
 
-    public function add(Request $request)
-{
-    Log::info('Procesando creación de tour Stateless.', ['user_id' => auth()->id()]);
+    public function add(StoreTourRequest $request, CreateTourAction $creator): RedirectResponse
+    {
+        Log::info('Iniciando proceso de creación de tour', [
+            'user_id' => auth()->id()
+        ]);
 
-    try {
-        $validated = $this->validateTourPayload($request);
+        $imagePath = $request->file('image')->store('tours', 'public');
+        Log::info('Imagen guardada temporalmente', ['path' => $imagePath]);
 
-        // REGLA: Si el JSON de puntos está vacío, abortamos.
-        if (empty($validated['puntos'])) {
-            Log::warning('Acceso ilegal a creación de tour sin datos.');
-            return redirect()->route('places.index')->with('error', 'Debes seleccionar lugares primero.');
-        }
+        $tourDTO = TourDTO::fromRequest($request);
 
-        $tour = DB::transaction(function () use ($request, $validated) {
-            $agencia = Agency::where('user_id', auth()->id())->firstOrFail();
-            $path = $request->file('image')->store('tours', 'public');
+        try {
+            $tour = $creator->execute(
+                $tourDTO,
+                auth()->user()->agency->id_agency,
+                $imagePath
+            );
 
-            $tour = Tour::create([
-                'tour_name'          => $validated['tour_name'],
-                'tour_price'         => $validated['tour_price'],
-                'description'        => $validated['description'],
-                'estimated_duration' => \Carbon\Carbon::parse($validated['estimated_duration'])->format('H:i:s'),
-                'image'              => $path,
-                'agency_id'          => $agencia->id_agency, 
+            Log::info('Tour creado exitosamente', [
+                'tour_id' => $tour->id_tour,
+                'user_id' => auth()->id()
             ]);
 
-            $this->processTourCategories($tour, $validated['categories_data']);
-            
-            // DELEGACIÓN: Centralizamos la lógica de paradas en su controlador experto
-            PlacesAvailableController::persistItinerary($tour->id_tour, $validated['puntos']);
-            
-            return $tour;
-        });
+            return redirect()->route('tour.index')->with('success', '¡Tour creado!');
 
-        Log::info('Tour publicado con éxito.', ['tour_id' => $tour->id_tour]);
-        return redirect()->route('tour.index')->with('success', '¡Tour creado exitosamente!');
-    } catch (\Exception $e) {
-        Log::error('Fallo crítico en creación de Tour.', ['msg' => $e->getMessage()]);
-        return back()->withInput()->with('error', 'Hubo un problema al guardar el tour.');
+        } catch (\Exception $e) {
+            Log::error('Error al crear el tour', [
+                'error'   => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+
+            Storage::disk('public')->delete($imagePath);
+
+            return back()->withInput()->with('error', 'Hubo un error al procesar el tour.');
+        }
     }
-}
     protected function processTourCategories(Tour $tour, string $jsonData)
     {
         $categoryNames = json_decode($jsonData, true);
@@ -130,7 +132,7 @@ class TourController extends Controller
         if (is_array($categoryNames)) {
             foreach ($categoryNames as $name) {
                 $category = Category::firstOrCreate(
-                    ['name' => mb_strtolower(trim($name))], 
+                    ['name' => mb_strtolower(trim($name))],
                     ['name' => trim($name)]
                 );
                 $categoryIds[] = $category->id_category;
@@ -140,5 +142,5 @@ class TourController extends Controller
         }
     }
 
-    
+
 }

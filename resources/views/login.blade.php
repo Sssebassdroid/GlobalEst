@@ -8,24 +8,25 @@
     <div id="login-container" class="form-container-bigger">
         <form action="{{ url('/login') }}" method="POST" class="form-container" id="login-form">
             @csrf
-            <input id="username-login" type="text" name="username" value="{{ old('username') }}" placeholder="BooleanSoX">            <input id="email-login" type="email" name="email" class="" placeholder="risetode@gmail.com">
-            <input id="user-password" type="password" name="password" class="" placeholder="Contraseña segura">
-            <input type="submit" value="Loguearme">
-            <label for="tipo-registro">Con que te quieres registrar?</label>
-            <select name="opcion-registro" id="tipo-registro">
-                <option value="1">Usuario</option>
-                <option value="2">Email</option>
-            </select>
-            <a href="{{ url('register') }}" class="brand-name">No tienes cuenta?</a>
+            <label for="login">Escoge tu manera de loguearte:
+            <input id="login" type="text" name="login" value="{{ old('login') }}" placeholder="Usuario o Email">
+            </label>
 
-            {{-- Comprobamos si hay algún error en la "bolsa" de errores --}}
-            @if ($errors->has('login'))
-            <div >
-            {{ $errors->first('login') }}
-            </div>
-
+            @if ($errors->has('login')){{ $errors->first('login') }}
             @endif
-            
+
+            <label for="password"> Introduce tu contraseña:
+            <input id="password" type="password" name="password" placeholder="Contraseña">
+            </label>
+            @if ($errors->has('password')){{ $errors->first('password') }}
+            @endif
+
+            <button type="submit" >Loguearme </button>
+            <a href="{{ route('register') }}" >No tienes cuenta?</a>
+            <a href="{{ route('register') }}" >Olvidaste la contraseña?</a>
+
+
+
 
         </form>
     </div>

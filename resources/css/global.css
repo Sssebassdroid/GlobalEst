@@ -1,3 +1,15 @@
+:root {
+    --primary-color: #CAF0F8;
+    --secondary-color: #5cb8ca;
+    --hover-secondary-color: #4fb7cc;
+    --highlight-color: #4651a5;
+
+    --error-color: #ff0000;
+    --warning-color: #ffff00;
+    --check-color: #00ff00;
+}
+
+
 *{
     margin: 0;
     border: 0;
@@ -17,7 +29,7 @@ body{
 
 .nav{
     padding-inline: 2rem 1rem;
-    background-color: #0077B6; 
+    background-color: #0077B6;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -43,13 +55,13 @@ body{
     color: white; /* Nombre de marca en blanco */
 }
 
-#logo-container img, 
+#logo-container img,
 #logo-container h1,
 #contenedor-opciones a {
     transition: opacity 0.3s ease;
 }
 
-#logo-container:hover img, 
+#logo-container:hover img,
 #logo-container:hover h1{
     opacity: 0.5;
 }
@@ -75,18 +87,18 @@ body{
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    
+
 }
 
 #search-tagline{
-    text-align: center;    
+    text-align: center;
     font-size: xx-large;
     color: #023E8A;
 }
 
 #mapamundi{
     width: 80vw;
-    height: 450px; 
+    height: 450px;
     border: 2px solid #3facbf73; /* Borde navy */
     border-radius: 10px;
 }

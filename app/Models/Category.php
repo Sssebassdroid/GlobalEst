@@ -2,7 +2,8 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-
+use  Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Query\Builder;
 
 class Category extends Model
 {
@@ -18,9 +19,13 @@ class Category extends Model
     ];
 
 
-    public function tours()
-{
-    return $this->belongsToMany(Tour::class, 'category_tour', 'category_id', 'tour_id');
-}
+    public function tours() : BelongsToMany
+     {
+        return $this->belongsToMany(
+            Tour::class,
+            'category_tour',
+            'category_id',
+            'tour_id');
+    }
 
 }

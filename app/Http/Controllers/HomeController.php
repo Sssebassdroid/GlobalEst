@@ -1,24 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Category;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Support\Renderable;
 use App\Models\Tour;
+use Illuminate\Routing\Controller;
 
 
 class HomeController extends Controller
 {
-  public function display()
-{
+    public function display() : Renderable
+    {
+        $tours = Tour::latestFeatured()->get();
+        return view('home', compact('tours'));
+    }
 
-    $tours = Tour::with(['categories', 'agencia']) // Eager loading para optimizar
-                ->latest() // Los más nuevos primero
-                ->take(10) // AQUÍ está el límite de 10
-                ->get();
 
-    return view('home', compact('tours'));
-
-}
-
-    
 }
