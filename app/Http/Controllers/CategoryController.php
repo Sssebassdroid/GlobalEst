@@ -2,38 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCategoryRequest;
 use App\Models\Category; // Importante para que funcione el display
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
 
 
+/**
+ * Controlador de categoria
+ */
 class CategoryController extends Controller
 {
-  public function display()
+    public function display() : View
 {
-    
-    $categorias = Category::all(); //<- De la categoria tablas, agarreme todas las que hay.
-    return view('tour', compact('categorias'));
+
+    /**
+     *1. Recibe como parámetros todas las categorias disponibles en la BBDD
+     *2. Devuelve una vista con las categorias.
+     */
+
+    $categories = Category::all();
+    return view('tour', compact('categories'));
 }
-
-
-
-
-
-
-
-    public function store(Request $request)
+    public function store(Request $request) : RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:50|unique:category,name',
-        ]);
-
-        Category::create([
-            'name' => $validated['name'],
-        ]);
+        /**
+         * 1. Toma una petición para crear una categoria nueva
+         *    Dentro del modelo Category
+         */
+        Category::create($request->validated());
 
         return redirect()->back()->with('success', 'Categoría creada con éxito');
     }
 
-
-    
 }
