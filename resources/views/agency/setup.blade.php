@@ -20,24 +20,24 @@
             <input id="confirm-password" type="password" name="password_confirmation" placeholder="Confirma contraseña..." required>
 
             <div id="contenedor-errores">
-    {{-- Aquí JS insertará el mensaje si las claves no coinciden --}}
-    <ul id="lista-errores-js"></ul>
+                {{-- Aquí JS insertará el mensaje si las claves no coinciden --}}
+                <ul id="lista-errores-js"></ul>
 
-    {{-- Errores que vienen del Servidor (Laravel) --}}
-    @if ($errors->any())
-        <script>
-            // Si hay errores de Laravel, forzamos que el contenedor se vea al cargar
-            document.addEventListener('DOMContentLoaded', () => {
-                document.getElementById('contenedor-errores').style.display = 'block';
-            });
-        </script>
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
-</div>
+                {{-- Errores que vienen del Servidor (Laravel) --}}
+                @if ($errors->any())
+                    <script>
+                        // Si hay errores de Laravel, forzamos que el contenedor se vea al cargar
+                        document.addEventListener('DOMContentLoaded', () => {
+                            document.getElementById('contenedor-errores').style.display = 'block';
+                        });
+                    </script>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
 
 
 
@@ -45,9 +45,6 @@
             <label for="tipo-usuario">¿Qué tipo de usuario eres?</label>
             <select name="role_id" id="tipo-usuario">
                 <option value="" selected disabled>Selecciona una opción</option>
-                @foreach($roles as $role)
-                    <option value="{{ $role->id }}">{{ $role->type }}</option>
-                @endforeach
             </select>
 
             <input type="submit" value="Registrarme">

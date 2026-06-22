@@ -7,12 +7,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-
 /**
  * Modelo de usuario.
  *
- * @property int $id_user
+ * @property int $id
  * @property string $username
  * @property string $name
  * @property string $first_last_name
@@ -28,7 +26,7 @@ class User extends Authenticatable
 
     protected $table = 'user';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'username',
@@ -61,10 +59,5 @@ class User extends Authenticatable
     {
         return $this->role_id == 2;
     }
-
-
-
-
-
 
 }

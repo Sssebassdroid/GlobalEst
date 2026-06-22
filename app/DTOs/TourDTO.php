@@ -34,7 +34,6 @@ readonly class TourDTO
      */
     public static function fromRequest(StoreTourRequest $request): self
     {
-        // 1. Decodificar el JSON de categorías entrantes de forma segura
         $categoriesJson = $request->validated('categories_data');
         $categoriesArray = json_decode($categoriesJson, true);
 
@@ -42,7 +41,6 @@ readonly class TourDTO
             $categoriesArray = [];
         }
 
-        // 2. Decodificar el JSON del itinerario temporal (puntos del mapa)
         $pointsJson = $request->validated('session_itinerary');
         $pointsArray = json_decode($pointsJson, true);
 
@@ -50,13 +48,11 @@ readonly class TourDTO
             $pointsArray = [];
         }
 
-        // 3. Formatear la duración estimada de forma consistente si es necesario
         $duration = $request->validated('estimated_duration');
         if (!empty($duration) && strlen($duration) === 5) { // Si viene como 'H:i' (ej: '02:30')
             $duration .= ':00'; // Lo convertimos a '02:30:00' para que coincida con el tipo TIME de la BD
         }
 
-        // Retornamos la instancia construida y tipada
         return new self(
             name: $request->validated('tour_name'),
             price: (float) $request->validated('tour_price'),

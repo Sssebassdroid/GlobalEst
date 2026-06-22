@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AgencyController;
+use App\Http\Middleware\EnsureAgencyHasProfile;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
@@ -29,16 +31,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/my-account', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/my-trips', function() { return view('my-trips'); })->name('tourist.index');
+    Route::get('/my-trips', function() { return view('my-trips'); })->name('tourist.trips');
+    Route::get('/agency/setup', [AgencyController::class, 'create'])->name('agency.setup')->middleware('auth');
 });
 
 // Rutas exclusivas de Agencia
-Route::middleware(['auth', 'agency'])->group(function () {
+Route::middleware(['auth', EnsureAgencyHasProfile::class])->group(function () {
     Route::get('/places', [PlacesAvailableController::class, 'display'])->name('places.index');
     Route::post('/places', [PlacesAvailableController::class, 'processSelection'])->name('places.add');
 
     Route::get('/create-tour', [CategoryController::class, 'display'])->name('tour.create');
-    Route::post('/create-tour', [TourController::class, 'add'])->name('tour.add');
+    Route::post('/create-tour', [TourController::class, 'add'])->name('tour.store');
 
     Route::get('/my-tours', [TourController::class, 'display'])->name('agency.index');
 

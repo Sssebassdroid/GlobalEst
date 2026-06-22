@@ -8,7 +8,7 @@
     <div id="register-container" class="form-container-bigger">
         <form action="{{ route('tour.create') }}" method="POST" enctype="multipart/form-data" id="tour-form" class="form-container">
             @csrf
-            
+
             <input id="tour_name" type="text" name="tour_name" placeholder="Nombre del Tour" required value="{{ old('tour_name') }}">
             <textarea id="description" name="description" placeholder="Descripción...">{{ old('description') }}</textarea>
             <input id="tour_price" type="number" name="tour_price" step="0.01" placeholder="Precio (€)" required value="{{ old('tour_price') }}">
@@ -17,8 +17,8 @@
             {{-- Categorías (Se gestionan por JS) --}}
             <input type="text" id="category-input" class="form-control" placeholder="Añadir categoría..." list="categories-list">
             <datalist id="categories-list">
-                @foreach($categorias as $categoria)
-                    <option value="{{ $categoria->name }}">
+                @foreach($categories as $category)
+                    <option value="{{ $category->name }}">
                 @endforeach
             </datalist>
             <div id="selected-tags"></div>
@@ -26,7 +26,7 @@
 
             <label for="image">Imagen de portada:</label>
             <input type="file" name="image" id="image" accept="image/*" required>
-            
+
             <hr>
             <h3>Itinerario Seleccionado</h3>
             <table id="tabla-marcadores">
@@ -41,7 +41,7 @@
             </table>
 
             {{-- INPUT OCULTO MAESTRO: Aquí irá todo el JSON del itinerario --}}
-            <input type="hidden" name="itinerario_temporal" id="itinerario-temporal">
+            <input type="hidden" name="temporal-itinerary" id="temporal-itinerary">
             @if ($errors->any())
                 <div class="error-box">
                     <ul>
@@ -51,7 +51,7 @@
                     </ul>
                 </div>
             @endif
-            
+
             <input type="submit" value="Publicar Tour">
         </form>
     </div>

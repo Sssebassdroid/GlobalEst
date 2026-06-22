@@ -6,16 +6,14 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
-// Importante para que funcione el display
-
 
 class CategoryController extends Controller
 {
     public function display()
     {
 
-        $categorias = Category::all();
-        return view('tour', compact('categorias'));
+        $categories = Category::all();
+        return view('tour', compact('categories'));
 
     }
 

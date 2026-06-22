@@ -1,8 +1,7 @@
 function renderItinerary(puntos) {
     const tabla = document.getElementById('cuerpo-tabla');
-    const inputOculto = document.getElementById('itinerario-temporal'); // Asegúrate que el ID en Blade coincida
+    const inputOculto = document.getElementById('temporal_itinerary'); // Asegúrate que el ID en Blade coincida
 
-    // Dibujamos la tabla visual para el usuario
     if (tabla) {
         tabla.innerHTML = puntos.map((lugar, index) => `
             <tr>
@@ -21,21 +20,21 @@ function renderItinerary(puntos) {
 function checkAndClearStorage() {
     // Buscamos si existe el mensaje de éxito en el DOM
     // Ajusta el selector si tu alerta tiene otra clase (ej: .alert-success o #success-msg)
-    const successMessage = document.querySelector('.alert-success') || 
+    const successMessage = document.querySelector('.alert-success') ||
                            document.body.innerText.includes('¡Tour creado exitosamente!');
 
     if (successMessage) {
         console.log("Detectado éxito en el servidor. Purgando LocalStorage...");
-        localStorage.removeItem('itinerario_temporal');
-        
+        localStorage.removeItem('temporal-itinerary');
+
         // Opcional: También puedes limpiar la variable en memoria si fuera necesario
-        // listaTours = []; 
+        // listaTours = [];
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Intentamos leer la memoria del navegador
-    const data = localStorage.getItem('itinerario_temporal');
+    const data = localStorage.getItem('temporal-itinerary');
     const puntos = data ? JSON.parse(data) : [];
 
     // 2. Seguridad: Si el usuario intenta entrar a la fuerza sin puntos, lo expulsamos
@@ -47,5 +46,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderItinerary(puntos);
     checkAndClearStorage();
 
-    
+
 });

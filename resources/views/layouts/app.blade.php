@@ -7,13 +7,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet">   
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
     @stack('styles')
 </head>
 <body>
@@ -32,13 +32,13 @@
         <div id="contenedor-opciones">
     @auth
         <a href="{{ route('dashboard') }}" class="profile-link">
-            {{ auth()->user()->isBusiness() ? 'Mis Tours' : 'Mis Viajes' }}
+            {{ auth()->user()->isAgency() ? 'Mis Tours' : 'Mis Viajes' }}
         </a>
     @endauth
     @guest
-        <a href="{{route('login')}}"><i class="fa-solid fa-user"></i></a>    
+        <a href="{{route('login')}}"><i class="fa-solid fa-user"></i></a>
     @endguest
-        
+
 </div>
     </nav>
 </header>

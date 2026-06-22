@@ -1,6 +1,6 @@
 import { Coordenada } from './Coord.js';
 import { Lugar } from './Lugar.js';
-import { map } from './start-mapamundi.js'; 
+import { map } from './start-mapamundi.js';
 
 const formulario = document.getElementById('form-buscador');
 const formConfirmarRuta = document.getElementById('form-confirmar-ruta');
@@ -10,7 +10,7 @@ const placeName = document.getElementById('place-name');
 
 
 const polyline = L.polyline([], {
-    color: '#2563eb', 
+    color: '#2563eb',
     weight: 3,
     opacity: 0.8
 }).addTo(map);
@@ -43,11 +43,11 @@ async function createMarker(lat, long) {
         data.osm_type,
         data.osm_id
     );
-    
+
     listaTours.push(newPlace);
-    
-    localStorage.setItem('itinerario_temporal', JSON.stringify(listaTours));
-    
+
+    localStorage.setItem('temporal-itinerary', JSON.stringify(listaTours));
+
     polyline.addLatLng([lat, long]);
     L.marker([lat, long], { icon: customIcon(listaTours.length) }).addTo(map).bindPopup(newPlace.display_name);
     actualizarTablaVistaPrevia();
@@ -66,8 +66,8 @@ function actualizarTablaVistaPrevia() {
 
 if (formConfirmarRuta) {
     formConfirmarRuta.addEventListener('submit', function(e) {
-        const datos = localStorage.getItem('itinerario_temporal');
-        const inputHidden = document.getElementById('itinerario-temporal');
+        const datos = localStorage.getItem('temporal-itinerary');
+        const inputHidden = document.getElementById('temporal-itinerary');
 
         if (!datos || JSON.parse(datos).length === 0) {
             e.preventDefault();
@@ -75,8 +75,7 @@ if (formConfirmarRuta) {
             return;
         }
 
-        // ¡PASO CRÍTICO!: Inyectar el JSON en el input que leerá Laravel
-        inputHidden.value = datos; 
+        inputHidden.value = datos;
     });
 }
 
@@ -88,22 +87,22 @@ async function getCoordsByName(namePlace){
         console.log(response);
         const data = await response.json();
 
-        
-        if(data.length > 0){   
+
+        if(data.length > 0){
             const firstResult = data[0];
             const lat = firstResult.lat;
             const lon = firstResult.lon;
-            map.flyTo([lat, lon], 15); 
+            map.flyTo([lat, lon], 15);
             createMarker(lat, lon);
         }else{
             console.warn("No se encontraron coordenadas para esa dirección.");
         }
-        
+
     }
     catch(error){
         console.error("Error en la geocodificacion", error)
     }
-    
+
 }
 
 formulario.addEventListener('submit', function(event){
@@ -118,7 +117,7 @@ map.on('click', (e) => createMarker(e.latlng.lat, e.latlng.lng));
 window.limpiarMapa = function() {
     if (confirm("¿Borrar todo?")) {
         listaTours = [];
-        localStorage.removeItem('itinerario_temporal');
+        localStorage.removeItem('temporal-itinerary');
         location.reload();
     }
 }

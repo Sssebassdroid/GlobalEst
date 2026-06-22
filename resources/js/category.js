@@ -5,20 +5,18 @@ const hiddenInput = document.getElementById('categories-data');
 const selectedCategories = document.getElementById('selected-tags');
 
 function selectCategory() {
-    // 1. Manejar selección por ratón o autocompletado (Evento input)
     selectExistingCategory();
-
-    // 2. Manejar pulsación de Enter (Para valores nuevos)
     selectNewCategory();
 }
 
+
 function selectExistingCategory(){
     categoryInput.addEventListener('input', function() {
-    
+
         const valor = this.value.trim();
-    
+
         const datalist = document.getElementById('categories-list');
-    
+
         const options = Array.from(datalist.options).map(opt => opt.value);
 
         if (options.includes(valor)) {
@@ -29,7 +27,7 @@ function selectExistingCategory(){
             this.blur();
             this.focus();
         }
-        
+
 
     });
 }
@@ -42,7 +40,7 @@ function selectNewCategory(){
             event.preventDefault(); // Evitar envío del formulario
 
             const valor = this.value.trim();
-            
+
             if (valor !== "") {
 
                 procesarNuevoTag(valor);
@@ -70,16 +68,16 @@ function procesarNuevoTag(valor) {
 
 function renderTag(name) {
     const tag = document.createElement('span');
-    
+
     // Añadimos una clase para que la busques en tu CSS
-    tag.className = 'custom-tag'; 
-    
+    tag.className = 'custom-tag';
+
     // Inyectamos el nombre y el botón que llama a removeCategory
     tag.innerHTML = `
-        ${name} 
+        ${name}
         <span class="remove-btn" onclick="window.removeCategory('${name}', this)">×</span>
     `;
-    
+
     selectedCategories.appendChild(tag);
 }
 
@@ -89,16 +87,16 @@ function updateHiddenInput() {
 
 window.removeCategory = function(name, element) {
     tagsArray = tagsArray.filter(t => t !== name);
-    
+
     // 2. Eliminar el elemento visual
     element.parentElement.remove();
-    
+
     // 3. Devolver la opción al datalist para que vuelva a estar disponible
     const datalist = document.getElementById('categories-list');
     const newOption = document.createElement('option');
     newOption.value = name;
     datalist.appendChild(newOption);
-    
+
     // 4. Actualizar el input oculto
     updateHiddenInput();
 };
@@ -113,10 +111,10 @@ if (tourForm) {
     tourForm.addEventListener('submit', function(e) {
         // Forzamos una última actualización del input oculto antes de salir
         updateHiddenInput();
-        
+
         // Log de depuración para que lo veas en la consola antes de que cambie la página
         console.log("Enviando categorías:", hiddenInput.value);
-        
+
         // Validación extra: si el array está vacío, podrías incluso frenar el envío
         if (tagsArray.length === 0) {
             e.preventDefault();

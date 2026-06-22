@@ -17,22 +17,10 @@ class PlacesAvailableController extends Controller
         return view('add_place');
     }
 
-    /**
-     * Recibe la selección y la envía a la siguiente fase.
-     * Ya NO usa session. El frontend debe manejar el paso de datos.
-     */
     public function processSelection(Request $request)
     {
         try {
-
-            /**
-             * 1. Toma de parámetros los posibles valores de un lugar disponible
-             * 2. Verifica que haya points válidos en la solicitud
-             * 3. Redirige al segundo paso de crear un tour
-             *    guardando en la sesión
-             */
-
-            $points = json_decode($request->input('session_itinerary'), true);
+            $points = json_decode($request->input('temporal-itinerary'), true);
 
             if (!$points || count($points) === 0) {
                 Log::warning('Intento de envío de itinerario vacío.', ['user_id' => auth()->id()]);
@@ -50,11 +38,6 @@ class PlacesAvailableController extends Controller
         }
     }
 
-    /**
-     * Metodo estático de utilidad para persistir el itinerario.
-     * Centralizamos aquí la lógica para evitar duplicidad en TourController.
-     * @throws Exception
-     */
 public static function persistItinerary(int $tourId, array $points): void
 {
     try {
