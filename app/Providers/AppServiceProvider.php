@@ -12,9 +12,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if (class_exists(Telescope::class)) {
-            Telescope::ignoreMigrations();
-        }
     }
 
     /**

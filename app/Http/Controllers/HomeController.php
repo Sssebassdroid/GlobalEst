@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Actions\GetFeaturedToursAction;
 use Illuminate\Contracts\Support\Renderable;
-use App\Models\Tour;
 use Illuminate\Routing\Controller;
 
 
 class HomeController extends Controller
 {
-    public function display() : Renderable
+    public function display(GetFeaturedToursAction $getFeaturedTours) : Renderable
     {
-        $tours = Tour::latestFeatured()->get();
+        $tours = $getFeaturedTours->execute();
         return view('home', compact('tours'));
     }
 
