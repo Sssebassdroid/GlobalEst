@@ -5,24 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-
-class Role extends Model
+class Booking extends Model
 {
-    use HasFactory;
+    protected $table = 'booking';
 
-    protected $table = 'role';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
-        'type',
+        'order_date',
+        'total_amount',
+        'user_id',
     ];
 
-    public function user(): hasMany
+    public function user(): HasOne
     {
-        return $this->hasMany(User::class);
+        return $this->HasOne(User::class);
     }
 
 }

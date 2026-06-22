@@ -1,13 +1,14 @@
-<?php 
+<?php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PlaceAvailable extends Model
 {
     protected $table = 'places_available';
-    protected $primaryKey = 'id_place'; // Importante para recuperar el ID tras el Create
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -15,16 +16,16 @@ class PlaceAvailable extends Model
         'display_name',
         'osm_id',
         'osm_type',
-        'latitude',  // Corregido a inglés según tu esquema
-        'longitude', // Corregido a inglés según tu esquema
+        'latitude',
+        'longitude',
         'importance',
-        'city_id'       // FK hacia la tabla city
+        'city_id'
     ];
 
 
-public function ciudad(): BelongsTo
+public function city(): BelongsTo
 {
-    return $this->belongsTo(City::class, 'city', 'id_city');
+    return $this->belongsTo(City::class);
 }
 
 

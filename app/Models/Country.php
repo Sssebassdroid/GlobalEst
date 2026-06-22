@@ -8,30 +8,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
 {
-    // Definimos la tabla y la PK según tu esquema
     protected $table = 'country';
-    protected $primaryKey = 'id_country';
+
     public $timestamps = false;
 
     protected $fillable = [
         'name',
-        'continent_id', // FK que apunta a id_continent
+        'continent_id',
     ];
 
-    /**
-     * Relación: Un país pertenece a un continente.
-     */
-    public function continente(): BelongsTo
+    public function continent(): BelongsTo
     {
-        // El segundo parámetro es la FK en esta tabla, el tercero es la PK en Continent
-        return $this->belongsTo(Continent::class, 'continent', 'id_continent');
+        return $this->belongsTo(Continent::class);
     }
 
-    /**
-     * Relación: Un país tiene muchas ciudades.
-     */
-    public function ciudades(): HasMany
+    public function cities(): HasMany
     {
-        return $this->hasMany(City::class, 'country', 'id_country');
+        return $this->hasMany(City::class);
     }
 }

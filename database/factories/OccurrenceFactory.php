@@ -13,7 +13,6 @@ class OccurrenceFactory extends Factory
     public function definition(): array
     {
         return [
-            // Eventos programados entre hoy y dentro de 6 meses
             'date_occurrence' => fake()->dateTimeBetween('now', '+6 months')->format('Y-m-d'),
             'start_hour' => fake()->time('H:i:s'),
             'maximum_person' => fake()->numberBetween(10, 30),

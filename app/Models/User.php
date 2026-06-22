@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasOne; // Importante
-use Illuminate\Database\Eloquent\Factories\HasFactory; // 1. La importación
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 /**
@@ -26,7 +27,7 @@ class User extends Authenticatable
     use HasFactory;
 
     protected $table = 'user';
-    protected $primaryKey = 'id_user';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -41,22 +42,22 @@ class User extends Authenticatable
 
     protected $hidden = ['password'];
 
-    public function roleType()
+    public function role(): BelongsTo
     {
-        return $this->belongsTo(Role::class, 'role_id', 'id_role');
+        return $this->belongsTo(Role::class);
     }
 
-    public function agencia(): HasOne
+    public function agency(): HasOne
     {
-        return $this->hasOne(Agency::class, 'user_id', 'id_user');
+        return $this->hasOne(Agency::class);
     }
 
-    public function isBusiness()
+    public function isAgency(): bool
     {
         return $this->role_id == 1;
     }
 
-    public function isNormalUser()
+    public function isTourist(): bool
     {
         return $this->role_id == 2;
     }

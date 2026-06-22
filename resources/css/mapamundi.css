@@ -17,7 +17,7 @@
     display: flex;
     flex: 1;
     background-color: blue;
-    overflow: scroll; 
+    overflow: scroll;
     justify-content: center;
     padding: 15px;
 }
@@ -36,7 +36,7 @@
 
 
 #tabla-marcadores {
-    padding: 20px 0px;
+    padding: 20px;
     table-layout: fixed;
     text-align: center; /* Los números suelen quedar mejor centrados */
 }

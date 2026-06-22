@@ -9,51 +9,24 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class City extends Model
 {
-    use HasFactory; // ¡Vital para que funcionen los tests!
+    use HasFactory;
 
     protected $table = 'city';
-    protected $primaryKey = 'id_city';
 
-    // Si tus migraciones tienen $table->timestamps(), pon esto a true
     public $timestamps = true;
 
     protected $fillable = [
         'name',
-        'country_id', // Cambiado de 'country' a 'country_id' para ser precisos
+        'country_id',
     ];
 
-    /**
-     * Lógica de resolución geográfica (Mantenemos el controlador limpio)
-     */
-    public static function resolveUbication(array $punto): int
+    public function country(): BelongsTo
     {
-        // 1. Resolvemos Continente
-        $continent = Continent::firstOrCreate(['name' => 'Europa']);
-
-        $countryName = $punto['country_name'] ?? 'País Desconocido';
-
-        $country = Country::firstOrCreate(
-            ['name' => $countryName],
-            ['continent_id' => $continent->id_continent]
-        );
-
-        $cityName = $punto['city_name'] ?? 'Ciudad Desconocida';
-        $city = self::firstOrCreate(
-            ['name' => $cityName],
-            ['country_id' => $country->id_country]
-        );
-
-        return $city->id_city;
+        return $this->belongsTo(Country::class);
     }
 
-    public function pais(): BelongsTo
+    public function places(): HasMany
     {
-        // Asegúrate de usar 'country_id' como FK
-        return $this->belongsTo(Country::class, 'country_id', 'id_country');
-    }
-
-    public function lugares(): HasMany
-    {
-        return $this->hasMany(PlaceAvailable::class, 'city_id', 'id_city');
+        return $this->hasMany(PlaceAvailable::class, 'city_id');
     }
 }

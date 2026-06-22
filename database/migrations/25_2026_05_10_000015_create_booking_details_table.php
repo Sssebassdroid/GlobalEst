@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('booking_details', function (Blueprint $table) {
-    $table->id('id_booking_details');
+        Schema::create('booking_detail', function (Blueprint $table) {
+    $table->id('id_booking_detail');
     $table->integer('quantity');
     $table->decimal('subtotal', 10, 2);
     $table->foreignId('order_id')->constrained('orders', 'id_order');

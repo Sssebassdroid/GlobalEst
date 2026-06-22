@@ -2,15 +2,15 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-use  Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Category extends Model
 {
 
     protected $table = 'category';
 
-    protected $primaryKey = 'id_category';
 
     public $timestamps = false;
 
@@ -18,14 +18,8 @@ class Category extends Model
         'name',
     ];
 
-
-    public function tours() : BelongsToMany
-     {
-        return $this->belongsToMany(
-            Tour::class,
-            'category_tour',
-            'category_id',
-            'tour_id');
+    public function tours(): BelongsToMany
+    {
+        return $this->BelongToMany(Tour::class);
     }
-
 }

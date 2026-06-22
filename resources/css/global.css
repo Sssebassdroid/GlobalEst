@@ -78,7 +78,7 @@ body{
 .main{
     flex-grow: 1;
     gap: 20px;
-    margin: 20px 0px;
+    margin: 20px;
 }
 
 

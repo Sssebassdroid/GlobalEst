@@ -1,31 +1,29 @@
 <?php
 
-namespace App\Models;
+    namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+    use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Database\Eloquent\Relations\BelongsTo;
+    use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Agency extends Model
-{
-    protected $table = 'agency';
-
-    protected $primaryKey = 'id_agency';
-
-    public $timestamps = false;
-
-    protected $fillable = [
-        'agency_name',
-        'user_id',
-    ];
-
-    public function administrador(): BelongsTo
+    class Agency extends Model
     {
-        return $this->belongsTo(User::class, 'user_id', 'id_user');
-    }
+        protected $table = 'agency';
 
-    public function tours(): HasMany
-    {
-        return $this->hasMany(Tour::class, 'agency', 'id_agency');
+        public $timestamps = true;
+
+        protected $fillable = [
+            'name',
+            'user_id',
+        ];
+
+        public function admin(): BelongsTo
+        {
+            return $this->belongsTo(User::class, 'user_id');
+        }
+
+        public function tours(): HasMany
+        {
+            return $this->hasMany(Tour::class);
+        }
     }
-}
