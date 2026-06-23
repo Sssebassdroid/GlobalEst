@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('role')->insert([
-            ['id_role' => 1, 'type' => 'Business'],
+            ['id_role' => 1, 'type' => 'Agencia'],
             ['id_role' => 2, 'type' => 'Turista'],
         ]);
 
@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
             ['id_agency' => 2, 'agency_name' => 'Madrid Tours', 'user_id' => 2],
         ]);
 
-        DB::table('places_available')->insert([
+        DB::table('place_available')->insert([
             [
                 'id_place' => 1,
                 'name' => 'Fontana Maggiore',
@@ -133,12 +133,12 @@ class DatabaseSeeder extends Seeder
             ['id_category_tour' => 2, 'category_id' => 2, 'tour_id' => 1],
         ]);
 
-        DB::table('orders')->insert([
+        DB::table('booking')->insert([
             ['id_order' => 1, 'order_date' => '2026-05-10 10:00:00', 'total_amount' => 50.00, 'user_id' => 3],
             ['id_order' => 2, 'order_date' => '2026-05-11 12:30:00', 'total_amount' => 15.00, 'user_id' => 3],
         ]);
 
- 
+
 
         DB::table('place_tour')->insert([
             ['id_places_tour' => 1, 'order_position' => 1, 'place_id' => 1, 'tour_id' => 1],
@@ -196,6 +196,6 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-    
+
     }
 }

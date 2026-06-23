@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('continent', function (Blueprint $table) {
-    $table->id('id_continent'); // PK según tu esquema
-    $table->string('name', 50)->unique();
-    $table->timestamps();
-});
+        Schema::create('city', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('country_id')->constrained('country');
+        });
     }
 
     /**
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('continent');
+        Schema::dropIfExists('city');
     }
 };

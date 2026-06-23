@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Continent extends Model
@@ -16,7 +15,7 @@ class Continent extends Model
         'name',
     ];
 
-    public function countries (): HasMany
+    public function countries(): HasMany
     {
         return $this->HasMany(Country::class);
     }

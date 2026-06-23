@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-    $table->id('id_order');
-    $table->dateTime('order_date');
-    $table->decimal('total_amount', 10, 2);
-    $table->foreignId('user_id')->constrained('user', 'id_user');
-    $table->timestamps();
-});
+        Schema::create('place_tour', function (Blueprint $table) {
+            $table->id();
+            $table->integer('position');
+            $table->foreignId('place_id')->constrained('place');
+            $table->foreignId('tour_id')->constrained('tour');
+        });
     }
 
     /**
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('place_tour');
     }
 };

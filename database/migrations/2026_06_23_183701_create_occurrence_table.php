@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('occurrence', function (Blueprint $table) {
-    $table->id('id_occurrence');
-    $table->date('date_occurrence');
-    $table->time('start_hour');
-    $table->integer('maximum_person');
-    $table->foreignId('tour_id')->constrained('tour', 'id_tour');
-    $table->timestamps();
-});
+            $table->id();
+            $table->date('date');
+            $table->time('start_time');
+            $table->integer('capacity');
+            $table->foreignId('tour_id')->constrained('tour');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ocurrence');
+        Schema::dropIfExists('occurrence');
     }
 };

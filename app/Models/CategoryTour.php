@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PlacesTour extends Model
+class CategoryTour extends Model
 {
 
 }

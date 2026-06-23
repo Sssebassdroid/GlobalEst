@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_tour', function (Blueprint $table) {
-    $table->id('id_category_tour');
-    $table->foreignId('category_id')->constrained('category', 'id_category');
-    $table->foreignId('tour_id')->constrained('tour', 'id_tour');
-    $table->timestamps();
-});
+        Schema::create('booking', function (Blueprint $table) {
+            $table->id();
+            $table->date('date');
+            $table->decimal('total');
+            $table->foreignId('user_id')->constrained('user');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_tour');
+        Schema::dropIfExists('booking');
     }
 };

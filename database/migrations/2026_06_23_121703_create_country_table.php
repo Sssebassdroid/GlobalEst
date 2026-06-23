@@ -4,19 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-       Schema::create('country', function (Blueprint $table) {
-    $table->id('id_country');
-    $table->string('name', 50)->unique();
-    $table->foreignId('continent_id')->constrained('continent', 'id_continent');
-    $table->timestamps();
-});
+        Schema::create('country', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 50)->unique();
+            $table->string('country_code', 3)->unique();
+            $table->foreignId('continent_id')->constrained('continent');
+        });
     }
 
     /**

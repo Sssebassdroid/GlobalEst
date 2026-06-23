@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class PlaceAvailable extends Model
 {
@@ -23,10 +24,14 @@ class PlaceAvailable extends Model
     ];
 
 
-public function city(): BelongsTo
-{
-    return $this->belongsTo(City::class);
-}
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
 
+    public function tours(): BelongsToMany
+    {
+        return $this->BelongToMany(Tour::class);
+    }
 
 }

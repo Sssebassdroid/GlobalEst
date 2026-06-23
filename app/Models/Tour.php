@@ -44,4 +44,10 @@ class Tour extends Model
     }
 
 
+    public function places(): BelongsToMany
+    {
+        return $this->belongsToMany(PlaceAvailable::class)
+            ->withPivot('order_position')
+            ->withTimestamps();
+    }
 }

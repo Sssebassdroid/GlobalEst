@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('agency', function (Blueprint $table) {
-    $table->id('id_agency');
-    $table->string('agency_name', 100);
-    // Vinculamos al usuario administrador (Business)
-    $table->foreignId('user_id')->constrained('user', 'id_user');
-    $table->timestamps();
-});
+        Schema::create('category_tour', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('tour_id')->constrained('tour');
+            $table->foreignId('category_id')->constrained('category');
+        });
     }
 
     /**
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('agency');
+        Schema::dropIfExists('category_tour');
     }
 };
