@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->text('description');
             $table->time('duration');
             $table->string('image')->nullable();
+            $table->integer('capacity');
             $table->foreignId('agency_id')->constrained('agency');
             $table->timestamps();
         });

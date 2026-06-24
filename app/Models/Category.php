@@ -10,9 +10,9 @@ class Category extends Model
 {
 
     protected $table = 'category';
+    const ?string UPDATED_AT = null;
 
-
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'name',
@@ -20,6 +20,6 @@ class Category extends Model
 
     public function tours(): BelongsToMany
     {
-        return $this->BelongToMany(Tour::class);
+        return $this->belongsToMany(Tour::class);
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('country', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50)->unique();
-            $table->string('country_code', 3)->unique();
+            $table->string('code', 3)->unique();
             $table->foreignId('continent_id')->constrained('continent');
         });
     }

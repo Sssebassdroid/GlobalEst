@@ -27,6 +27,6 @@ class City extends Model
 
     public function places(): HasMany
     {
-        return $this->hasMany(PlaceAvailable::class, 'city_id');
+        return $this->hasMany(Place::class);
     }
 }

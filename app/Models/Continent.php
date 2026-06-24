@@ -17,7 +17,7 @@ class Continent extends Model
 
     public function countries(): HasMany
     {
-        return $this->HasMany(Country::class);
+        return $this->hasMany(Country::class);
     }
 
 }

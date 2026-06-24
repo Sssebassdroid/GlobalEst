@@ -15,11 +15,13 @@ return new class extends Migration {
             $table->timestamps();
             $table->string('username', 50)->unique();
             $table->string('name', 50);
-            $table->string('first_last_name', 50);
+            $table->string('last_name', 50);
             $table->string('second_last_name', 50)->nullable();
             $table->string('email', 255)->unique();
             $table->string('password', 255);
             $table->foreignId('role_id')->constrained('role');
+            $table->rememberToken()->nullable();
+
         });
     }
 

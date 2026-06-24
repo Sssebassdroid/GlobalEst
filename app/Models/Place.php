@@ -5,20 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class PlaceAvailable extends Model
+class Place extends Model
 {
-    protected $table = 'places_available';
+    protected $table = 'place';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'name',
         'display_name',
+        'lat',
+        'lon',
         'osm_id',
         'osm_type',
-        'latitude',
-        'longitude',
+        'state',
         'importance',
         'city_id'
     ];
@@ -31,7 +33,12 @@ class PlaceAvailable extends Model
 
     public function tours(): BelongsToMany
     {
-        return $this->BelongToMany(Tour::class);
+        return $this->belongsToMany(Tour::class);
+    }
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 
 }

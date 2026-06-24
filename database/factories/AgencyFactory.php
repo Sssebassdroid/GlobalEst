@@ -12,7 +12,7 @@ class AgencyFactory extends Factory
     public function definition(): array
     {
         return [
-            'agency_name' => fake()->company(),
+            'name' => fake()->company(),
             'user_id' => User::inRandomOrder()->first()?->id_user ?? User::factory(),
         ];
     }

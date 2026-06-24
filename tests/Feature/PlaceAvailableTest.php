@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\PlaceAvailable;
+use App\Models\Place;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PlaceAvailableTest extends TestCase
@@ -14,7 +14,7 @@ class PlaceAvailableTest extends TestCase
     {
         $this->seed(\Database\Seeders\DatabaseSeeder::class);
 
-        $place = PlaceAvailable::where('name', 'Fontana Maggiore')->first();
+        $place = Place::where('name', 'Fontana Maggiore')->first();
 
         $this->assertNotNull($place);
         $this->assertEquals(43.1121, $place->latitude);

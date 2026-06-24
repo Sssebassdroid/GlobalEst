@@ -8,18 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-/**
- * Modelo de usuario.
- *
- * @property int $id
- * @property string $username
- * @property string $name
- * @property string $first_last_name
- * @property string|null $second_last_name
- * @property string $email
- * @property string $password
- * @property int $role_id
- */
 class User extends Authenticatable
 {
     use Notifiable;
@@ -32,14 +20,21 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'name',
-        'first_last_name',
+        'last_name',
         'second_last_name',
         'email',
         'password',
         'role_id',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'password' => 'hashed',
+    ];
 
     public function role(): BelongsTo
     {

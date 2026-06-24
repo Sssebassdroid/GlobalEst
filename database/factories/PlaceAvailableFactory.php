@@ -1,13 +1,13 @@
 <?php
 
 namespace Database\Factories;
-use App\Models\PlaceAvailable;
+use App\Models\Place;
 use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PlaceAvailableFactory extends Factory
 {
-    protected $model = PlaceAvailable::class;
+    protected $model = Place::class;
 
     public function definition(): array
     {

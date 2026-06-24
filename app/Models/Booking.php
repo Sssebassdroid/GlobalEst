@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Booking extends Model
@@ -12,14 +14,18 @@ class Booking extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'order_date',
-        'total_amount',
+        'date',
+        'total',
         'user_id',
     ];
 
-    public function user(): HasOne
+    public function user(): belongsTo
     {
-        return $this->HasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

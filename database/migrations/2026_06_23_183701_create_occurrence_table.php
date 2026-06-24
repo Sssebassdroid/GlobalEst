@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->time('start_time');
+            $table->time('end_time');
             $table->integer('capacity');
             $table->foreignId('tour_id')->constrained('tour');
             $table->timestamps();

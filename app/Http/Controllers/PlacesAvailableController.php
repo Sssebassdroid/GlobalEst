@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
-use App\Models\PlaceAvailable;
+use App\Models\Place;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -44,7 +44,7 @@ public static function persistItinerary(int $tourId, array $points): void
         foreach ($points as $index => $point) {
             $cityId = City::resolveUbication($point);
 
-            $placeDB = PlaceAvailable::updateOrCreate(
+            $placeDB = Place::updateOrCreate(
                 ['osm_id' => $point['osm_id']],
                 [
                     'name'         => $point['name'],

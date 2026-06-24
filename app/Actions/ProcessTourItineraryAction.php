@@ -3,7 +3,7 @@
 namespace App\Actions;
 
 use App\Models\Tour;
-use App\Models\PlaceAvailable;
+use App\Models\Place;
 use Illuminate\Support\Facades\Log;
 
 class ProcessTourItineraryAction
@@ -25,7 +25,7 @@ class ProcessTourItineraryAction
 
             // Si el lugar ya existe (buscando por osm_id), lo recupera.
             // Si no existe, lo inserta en places_available con los datos extra.
-            $place = PlaceAvailable::firstOrCreate(
+            $place = Place::firstOrCreate(
                 ['osm_id' => $punto['osm_id']], // Condición de búsqueda
                 [
                     'name'         => $punto['name'],

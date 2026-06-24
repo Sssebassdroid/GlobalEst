@@ -16,20 +16,13 @@ return new class extends Migration {
 
     {
 
-        Schema::create('booking_detail', function (Blueprint $table) {
-
+        Schema::create('ticket', function (Blueprint $table) {
             $table->id();
-
             $table->integer('quantity');
-
-            $table->decimal('price_per_unit');
-
+            $table->decimal('subtotal');
             $table->foreignId('booking_id');
-
             $table->foreignId('occurrence_id');
-
-            $table->timestamps('created_at');
-
+            $table->timestamp('created_at');
         });
 
     }
@@ -43,7 +36,7 @@ return new class extends Migration {
 
     {
 
-        Schema::dropIfExists('booking_detail');
+        Schema::dropIfExists('ticket');
 
     }
 

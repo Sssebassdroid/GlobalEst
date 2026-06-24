@@ -6,11 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-/**
- * App\Models\Tour
- * @method static Builder|Tour latestFeatured()
- */
 class Tour extends Model
 {
 
@@ -19,11 +16,12 @@ class Tour extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'tour_name',
-        'tour_price',
+        'name',
+        'price',
         'description',
-        'estimated_duration',
+        'duration',
         'image',
+        'capacity',
         'agency_id',
     ];
 
@@ -46,8 +44,12 @@ class Tour extends Model
 
     public function places(): BelongsToMany
     {
-        return $this->belongsToMany(PlaceAvailable::class)
-            ->withPivot('order_position')
-            ->withTimestamps();
+        return $this->belongsToMany(Place::class)
+            ->withPivot('position');
+    }
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 }
