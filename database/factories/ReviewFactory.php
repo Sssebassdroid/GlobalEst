@@ -14,10 +14,11 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'rating' => fake()->numberBetween(1, 5), // Estrellas del 1 al 5
-            'comment' => fake()->optional(0.7)->text(200), // 70% de probabilidad de tener comentario
-            'user_id' => User::inRandomOrder()->first()?->id_user ?? User::factory(),
-            'tour_id' => Tour::inRandomOrder()->first()?->id_tour ?? Tour::factory(),
+            'rating' => fake()->numberBetween(1, 5),
+            'comment' => fake()->optional(0.7)->sentence(10),
+            'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
+            'tour_id' => Tour::inRandomOrder()->first()?->id ?? Tour::factory(),
+            'created_at' => now(),
         ];
     }
 }

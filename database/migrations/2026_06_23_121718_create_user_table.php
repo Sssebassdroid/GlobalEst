@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('user', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('username', 50)->unique();
             $table->string('name', 50);
             $table->string('last_name', 50);
@@ -21,7 +20,7 @@ return new class extends Migration {
             $table->string('password', 255);
             $table->foreignId('role_id')->constrained('role');
             $table->rememberToken()->nullable();
-
+            $table->timestamps();
         });
     }
 

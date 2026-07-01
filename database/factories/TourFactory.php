@@ -12,12 +12,14 @@ class TourFactory extends Factory
     public function definition(): array
     {
         return [
-            'tour_name' => fake()->sentence(3),
-            'tour_price' => fake()->randomFloat(2, 10, 500),
-            'description' => fake()->optional()->paragraph(),
-            'estimated_duration' => fake()->time('H:i:s'),
-            'image' => fake()->optional()->imageUrl(),
-            'agency_id' => Agency::inRandomOrder()->first()?->id_agency ?? Agency::factory(),
+            'name' => fake()->sentence(3, 4),
+            'price' => fake()->randomFloat(2, 10, 500),
+            'description' => fake()->paragraph(),
+            'duration' => fake()->time(),
+            'capacity' => fake()->numberBetween(5,50),
+            'agency_id' => Agency::inRandomOrder()->first()?->id ?? Agency::factory(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

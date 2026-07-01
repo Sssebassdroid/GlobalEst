@@ -13,9 +13,11 @@ class BookingFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_date' => fake()->dateTimeThisYear(),
-            'total_amount' => fake()->randomFloat(2, 15, 1500),
-            'user_id' => User::inRandomOrder()->first()?->id_user ?? User::factory(),
+            'date' => fake()->dateTimeThisYear(),
+            'total' => fake()->randomFloat(2, 15, 1500),
+            'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
+            'created_at' => fake()->dateTimeThisYear(),
+            'updated_at' => fake()->dateTimeThisYear(),
         ];
     }
 }

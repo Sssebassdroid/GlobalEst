@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->string('address_type', 50);
             $table->decimal('lat', 10, 7);
             $table->decimal('lon', 10, 7);
-            $table->string('osm_id');
-            $table->string('osm_type');
+            $table->string('osm_id')->nullable();
+            $table->string('osm_type')->nullable();
             $table->string('state')->nullable();
             $table->decimal('importance')->nullable();
             $table->foreignId('city_id')->constrained('city');

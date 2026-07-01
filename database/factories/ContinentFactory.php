@@ -11,7 +11,7 @@ class ContinentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->country(),
+            'name' => fake()->unique()->word(),
         ];
     }
 }
