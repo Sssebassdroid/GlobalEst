@@ -12,15 +12,18 @@ readonly class TourDTO
      * @param string $name Nombre del tour.
      * @param float $price Precio formateado como flotante.
      * @param string $description Descripción del destino.
-     * @param string $estimatedDuration Duración estimada en formato 'H:i:s'.
+     * @param string $duration
+     * @param int $capacity
      * @param array $categories Nombres de las categorías a asociar.
      * @param array $points Listado de coordenadas geográficas decodificadas.
      */
     public function __construct(
         public string $name,
+        public string $agency,
         public float $price,
         public string $description,
-        public string $estimatedDuration,
+        public string $duration,
+        public int $capacity,
         public array $categories,
         public array $points
     ) {}
@@ -50,14 +53,16 @@ readonly class TourDTO
 
         $duration = $request->validated('estimated_duration');
         if (!empty($duration) && strlen($duration) === 5) { // Si viene como 'H:i' (ej: '02:30')
-            $duration .= ':00'; // Lo convertimos a '02:30:00' para que coincida con el tipo TIME de la BD
+            $duration .= ':00'; // Lo convertimos a '02:30:00'
         }
 
         return new self(
-            name: $request->validated('tour_name'),
-            price: (float) $request->validated('tour_price'),
+            name: $request->validated('name'),
+            agency: $request->validated('agency'),
+            price: (float) $request->validated('price'),
             description: $request->validated('description'),
-            estimatedDuration: $duration ?? '00:00:00',
+            duration: $duration ?? '00:00:00',
+            capacity: $request->validated('capacity'),
             categories: $categoriesArray,
             points: $pointsArray
         );

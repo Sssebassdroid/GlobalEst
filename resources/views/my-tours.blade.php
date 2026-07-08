@@ -4,11 +4,12 @@
 
 @section('content')
     <p id="search-tagline">Gestión de tus Tours Publicados</p>
+    {{$agency->name}}
 
     <div id="register-container" class="form-container-bigger">
         <div class="form-container">
             <h3>Lista de Tours Publicados</h3>
-            
+
             <table id="tabla-marcadores">
                 <thead>
                     <tr>
@@ -22,39 +23,50 @@
                 <tbody>
                     @forelse($tours as $tour)
                         <tr>
-                            {{-- 1. Visualización de Imagen --}}
                             <td>
                                 @if($tour->image)
-                               <!--      <img src="{{ asset('storage/' . $tour->image) }}" 
-                                         alt="{{ $tour->tour_name }}" > -->
+                               <!--      <img src="{{ asset('storage/' . $tour->image) }}"
+                                         alt="{{ $tour->name }}" > -->
                                 @else
                                     <div>
-                                        Sin imagen
+                                        Imagen:
+
                                     </div>
                                 @endif
                             </td>
 
-                            {{-- 2. Identificación y Descripción --}}
                             <td>
-                                <strong>{{ $tour->tour_name }}</strong><br>
+                                Name:
+                                <strong>{{ $tour->name }}</strong><br>
                                 <small>
-                                    {{ $tour->description }}
+                                   Description:  {{ $tour->description }}
                                 </small>
                             </td>
 
                             {{-- 3. Métricas del Tour --}}
                             <td>
-                                <span class="tag-price">{{ number_format($tour->tour_price, 2) }}€</span><br>
-                                <small>⏱ {{ $tour->estimated_duration }}</small>
+                                <span class="tag-price">{{ number_format($tour->price, 2) }}€</span><br>
+                                <small>⏱ {{ $tour->duration }}</small>
                             </td>
 
-                            {{-- 4. Categorías con estilo de etiquetas --}}
                             <td>
                                 @foreach($tour->categories as $category)
                                     <span class="tag-category">
                                         {{ $category->name }}
                                     </span>
                                 @endforeach
+                            </td>
+
+                            <td>
+                                @if($tour->capacity)
+                                    <span>
+                                        Capacidad: {{ $tour->capacity }} personas
+                                    </span>
+
+                                @endif
+                                    <span class="tag-active">
+                                        Activo
+                                    </span>
                             </td>
 
                             {{-- 5. Acciones --}}
@@ -71,7 +83,7 @@
                     @endforelse
                 </tbody>
             </table>
-            
+
             <br>
             <div>
                 <a href="{{ route('places.add') }}" class="btn-confirm">
@@ -84,8 +96,7 @@
 
 @if(session('success'))
     <script>
-        // Limpiamos el borrador solo si el servidor confirma el éxito
-        localStorage.removeItem('itinerario_temporal');
+        localStorage.removeItem('itinerary');
         console.log('Ecosistema GlobalEst: LocalStorage purgado tras persistencia exitosa.');
     </script>
 @endif

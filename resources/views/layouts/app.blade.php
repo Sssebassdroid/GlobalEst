@@ -21,7 +21,7 @@
 <header class="header">
     <nav class="nav">
         <div id="logo-container">
-            <a href="{{ url('/') }}">
+            <a id="img-container" href="{{ url('/') }}">
                 <img src="{{ asset('img/GlobalestLogo.png') }}" alt="logo Globalest" id="img-logo">
             </a>
             <a href="{{ url('/') }}" class="brand-name">
@@ -29,7 +29,7 @@
             </a>
         </div>
 
-        <div id="contenedor-opciones">
+        <div id="options-container">
     @auth
         <a href="{{ route('dashboard') }}" class="profile-link">
             {{ auth()->user()->isAgency() ? 'Mis Tours' : 'Mis Viajes' }}

@@ -11,39 +11,35 @@ class ProcessTourItineraryAction
     /**
      * Procesa los puntos geográficos y los sincroniza con el tour.
      */
-    public function execute(Tour $tour, array $puntos): void
+    public function execute(Tour $tour, array $points): void
     {
-        if (empty($puntos)) {
+        if (empty($points)) {
             Log::warning("No se recibieron puntos de itinerario para el tour {$tour->id}");
             return;
         }
 
         $placeIds = [];
 
-        // 1. Iteramos sobre cada punto recibido en el DTO
-        foreach ($puntos as $punto) {
+        foreach ($points as $point) {
 
-            // Si el lugar ya existe (buscando por osm_id), lo recupera.
-            // Si no existe, lo inserta en places_available con los datos extra.
             $place = Place::firstOrCreate(
-                ['osm_id' => $punto['osm_id']], // Condición de búsqueda
+                ['osm_id' => $point['osm_id']],
                 [
-                    'name'         => $punto['name'],
-                    'display_name' => $punto['display_name'],
-                    'latitude'     => $punto['lat'],
-                    'longitude'    => $punto['long'],
-                    'osm_type'     => $punto['osm_type'],
-                ] // Datos a insertar si no se encuentra
+                    'name'         => $point['name'],
+                    'display_name' => $point['display_name'],
+                    'lat'     => $point['lat'],
+                    'lon'    => $point['lon'],
+                    'osm_type'     => $point['osm_type'],
+                    'osm_id'     => $point['osm_id'],
+                    'importance' => $point['importance'],
+                ]
             );
 
-            // Guardamos la llave primaria (id_place según tu esquema)
-            $placeIds[] = $place->id_place;
+            $placeIds[] = $place->id;
         }
 
-        // 2. Sincroniza la relación con la tabla pivote 'place_tour'
-        // NOTA: Esto asume que tienes un método places() en el modelo Tour.
         $tour->places()->sync($placeIds);
 
-        Log::info("Itinerario sincronizado para el tour {$tour->id_tour}", ['place_ids' => $placeIds]);
+        Log::info("Itinerario sincronizado para el tour {$tour->id}", ['place_ids' => $placeIds]);
     }
 }

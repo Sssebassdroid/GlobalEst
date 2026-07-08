@@ -59,6 +59,7 @@ class Tour extends Model
         'duration',
         'capacity',
         'agency_id',
+        'image',
     ];
 
 

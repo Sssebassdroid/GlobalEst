@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Models\Tour;
 use App\DTOs\TourDTO;
 use App\Models\Category;
-use App\Http\Controllers\PlacesAvailableController;
+use App\Http\Controllers\PlaceController;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +25,6 @@ class CreateTourAction
      */
     public function execute(TourDTO $tourData, int $agencyId, string $imagePath): Tour
     {
-        // Ejecutamos todo dentro de una transacción de Base de Datos para asegurar la atomicidad
         return DB::transaction(function () use ($tourData, $agencyId, $imagePath) {
 
             Log::info('Action: Iniciando inserción de datos del tour en la BD', [
@@ -36,21 +35,17 @@ class CreateTourAction
             // 1. Crear el registro principal del Tour
             $tour = Tour::create([
                 'agency'             => $agencyId, // Llave foránea según tu base de datos
-                'tour_name'          => $tourData->name,
-                'tour_price'         => $tourData->price,
+                'name'          => $tourData->name,
+                'price'         => $tourData->price,
                 'description'        => $tourData->description,
-                'estimated_duration' => $tourData->estimatedDuration,
+                'duration' => $tourData->duration,
                 'image'              => $imagePath,
             ]);
 
-            // 2. Vincular los Lugares Disponibles (Itinerario / Puntos Geográficos)
             Log::info('Action: Procesando y persistiendo itinerario de puntos geográficos');
 
-            // Reutilizamos e integramos la lógica de tu controlador de lugares pasándole el array decodificado
-            // NOTA: Asegúrate de adaptar PlacesAvailableController si requiere el request HTTP completo o solo el array.
-            PlacesAvailableController::persistItinerary($tour->id_tour, $tourData->points);
+            PlaceController::persistItinerary($tour->id, $tourData->points);
 
-            // 3. Vincular las Categorías del Tour (Relación Many-to-Many)
             if (!empty($tourData->categories)) {
                 Log::info('Action: Sincronizando categorías asociadas al tour', [
                     'categories' => $tourData->categories
@@ -59,14 +54,12 @@ class CreateTourAction
                 $categoryIds = [];
 
                 foreach ($tourData->categories as $categoryName) {
-                    // Buscamos la categoría por nombre o la creamos si no existe
                     $category = Category::firstOrCreate([
                         'name' => trim($categoryName)
                     ]);
-                    $categoryIds[] = $category->id_category;
+                    $categoryIds[] = $category->id;
                 }
 
-                // Sincronizamos en la tabla pivote 'category_tour'
                 $tour->categories()->sync($categoryIds);
             }
 

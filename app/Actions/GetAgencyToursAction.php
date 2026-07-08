@@ -19,12 +19,12 @@ class GetAgencyToursAction
     {
         $agency = Agency::where('user_id', $userId)->firstOrFail();
 
-        $tours = Tour::where('agency_id', $agency->id_agency)
+        $tours = Tour::where('agency_id', $agency->id)
             ->with('categories')
             ->get();
 
         Log::info('Carga de tours completada desde Action.', [
-            'agency_id' => $agency->id_agency,
+            'agency_id' => $agency->id,
             'count'     => $tours->count()
         ]);
 

@@ -36,7 +36,7 @@
                 <div id="opciones-ruta">
                     <form id="form-confirmar-ruta" action="{{ route('places.add') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="temporal-itinerary" id="temporal-itinerary">
+                        <input type="hidden" name="itinerary" id="itinerary">
                         <button type="submit" class="btn-confirm">Confirmar Itinerario</button>
                     </form>
                     <button type="button" class="btn-cancel" onclick="limpiarMapa()">Eliminar Todo</button>

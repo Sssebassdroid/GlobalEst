@@ -7,7 +7,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\PlacesAvailableController;
+use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 
@@ -37,8 +37,8 @@ Route::middleware(['auth'])->group(function () {
 
 // Rutas exclusivas de Agencia
 Route::middleware(['auth', EnsureAgencyHasProfile::class])->group(function () {
-    Route::get('/places', [PlacesAvailableController::class, 'display'])->name('places.index');
-    Route::post('/places', [PlacesAvailableController::class, 'processSelection'])->name('places.add');
+    Route::get('/places', [PlaceController::class, 'display'])->name('places.index');
+    Route::post('/places', [PlaceController::class, 'processSelection'])->name('places.add');
 
     Route::get('/create-tour', [CategoryController::class, 'display'])->name('tour.create');
     Route::post('/create-tour', [TourController::class, 'add'])->name('tour.store');

@@ -15,6 +15,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // Registrar Telescope solo si NO estamos ejecutando tests y si estamos en entorno local
+        // o si la variable de entorno TELESCOPE_ENABLED está activada.
+        // Esto evita que Telescope se cargue durante la suite de pruebas.
+        if (! $this->app->runningUnitTests() && ($this->app->isLocal() || env('TELESCOPE_ENABLED', false))) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+        }
     }
 
     /**

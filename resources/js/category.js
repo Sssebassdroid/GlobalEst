@@ -1,4 +1,3 @@
-// Definición de variables globales
 let tagsArray = [];
 const categoryInput = document.getElementById('category-input');
 const hiddenInput = document.getElementById('categories-data');

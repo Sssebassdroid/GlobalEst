@@ -27,23 +27,23 @@
         @forelse($tours as $tour)
             <div class="tour-card">
                 <div class="tour-header">
-                    <img src="{{ asset('storage/' . $tour->image) }}" alt="Imagen de {{ $tour->tour_name }}">
-                    <span class="price-tag">{{ $tour->tour_price }}€</span>
+                    <img src="{{ asset('storage/' . $tour->image) }}" alt="Imagen de {{ $tour->name }}">
+                    <span class="price-tag">{{ $tour->price }}€</span>
                 </div>
 
                 <div class="tour-body">
-                    <h3>{{ $tour->tour_name }}</h3>
-                    <p class="agency-name">Publicado por: {{ $tour->agencia_relacion->agency_name }}</p>
+                    <h3>{{ $tour->name }}</h3>
+                    <p class="agency-name">Publicado por: {{ $tour->agency }}</p>
 
                     <div class="categories-container">
-                        @foreach($tour->categorias as $cat)
+                        @foreach($tour->categories as $cat)
                             <span class="category-pill">{{ $cat->name }}</span>
                         @endforeach
                     </div>
                 </div>
 
                 <div class="tour-footer">
-                    <a href="{{ route('tour.show', $tour->id_tour) }}" class="btn-more">Explorar Tour</a>
+                    <a href="{{ route('tour.show', $tour->id) }}" class="btn-more">Explorar Tour</a>
                 </div>
             </div>
         @empty

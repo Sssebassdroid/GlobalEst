@@ -40,7 +40,7 @@ class TourService
 
             $this->processItineraryAction->execute($tour, $dto->points);
 
-            Log::info("Tour {$tour->id_tour} creado exitosamente con todas sus relaciones.");
+            Log::info("Tour {$tour->id} creado exitosamente con todas sus relaciones.");
 
             return $tour;
         });

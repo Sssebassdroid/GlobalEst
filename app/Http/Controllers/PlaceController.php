@@ -10,7 +10,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class PlacesAvailableController extends Controller
+class PlaceController extends Controller
 {
     public function display()
     {
@@ -49,8 +49,8 @@ public static function persistItinerary(int $tourId, array $points): void
                 [
                     'name'         => $point['name'],
                     'display_name' => $point['display_name'],
-                    'latitude'     => $point['lat'],
-                    'longitude'    => $point['long'],
+                    'lat'     => $point['lat'],
+                    'lon'    => $point['lon'],
                     'osm_type'     => $point['osm_type'],
                     'city_id'      => $cityId
                 ]
@@ -59,7 +59,7 @@ public static function persistItinerary(int $tourId, array $points): void
             // Inserción en tabla pivote con naming de BD correcto
             DB::table('place_tour')->insert([
                 'tour_id'        => $tourId,
-                'place_id'       => $placeDB->id_place,
+                'place_id'       => $placeDB->id,
                 'order_position' => $index + 1,
                 'created_at'     => now(),
             ]);

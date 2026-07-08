@@ -40,8 +40,7 @@
                 <tbody id="cuerpo-tabla"></tbody>
             </table>
 
-            {{-- INPUT OCULTO MAESTRO: Aquí irá todo el JSON del itinerario --}}
-            <input type="hidden" name="temporal-itinerary" id="temporal-itinerary">
+            <input type="hidden" name="itinerary" id="itinerary">
             @if ($errors->any())
                 <div class="error-box">
                     <ul>

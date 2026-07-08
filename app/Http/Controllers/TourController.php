@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreTourRequest;
@@ -20,13 +21,20 @@ class TourController extends Controller
     public function display(GetAgencyToursAction $getAgencyTours)
     {
         try {
-            $tours = $getAgencyTours->execute(auth()->user()->id);
-            return view('my-tours', compact('tours'));
+            $userId = auth()->id();
+
+            // Cachear el registro de la agencia (solo id y name) para evitar consultas repetidas
+            $agency = Cache::remember("agency:{$userId}", 3600, function () {
+                return auth()->user()->agency()->select('id', 'name')->first();
+            });
+
+            $tours = $getAgencyTours->execute($userId);
+            return view('my-tours', compact('tours', 'agency'));
 
 
         } catch (ModelNotFoundException $e) {
             Log::error('Error de integridad: Perfil de agencia no encontrado para el usuario.', [
-                'user_id' => auth()->user()->id_user
+                'user_id' => auth()->user()->id
             ]);
             return redirect()->route('agency.setup');
 

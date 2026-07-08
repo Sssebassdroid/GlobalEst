@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTourRequest extends FormRequest
@@ -15,26 +16,27 @@ class StoreTourRequest extends FormRequest
     {
         $user = $this->user();
 
-        return $user !== null && method_exists($user, 'isBusiness') && $user->isBusiness();
+        // Permitir únicamente a usuarios autenticados que tengan una agencia asociada.
+        // Esto evita que peticiones anónimas o usuarios sin agencia creen tours.
+        return $user !== null && isset($user->agency) && $user->agency->id !== null;
     }
 
     /**
      * Obtiene las reglas de validación que se aplicarán a la petición.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'tour_name' => 'required|string|min:3|max:150',
-            'tour_price' => 'required|numeric|min:0',
+            'name' => 'required|string|min:3|max:150',
+            'price' => 'required|numeric|min:0',
             'description' => 'required|string|min:10|max:2000',
-            'estimated_duration' => 'required|string', // Se valida como string para ser formateada en el DTO
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048', // Máximo 2MB
-
-            // Validamos que categories_data e itinerario_temporal existan y sean strings (ya que viajan como JSON)
-            'categories_data' => 'required|string',
-            'session_itinerary' => 'required|string',
+            'duration' => 'required|string',
+            'capacity' => 'required|integer|min:2',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'categories_list' => 'required|string',
+            'itinerary' => 'required|string',
         ];
     }
 
@@ -46,13 +48,14 @@ class StoreTourRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'tour_name' => 'nombre del tour',
-            'tour_price' => 'precio',
+            'name' => 'nombre del tour',
+            'price' => 'precio',
             'description' => 'descripción',
-            'estimated_duration' => 'duración estimada',
+            'duration' => 'duración',
+            'capacity' => 'capacidad',
             'image' => 'imagen del tour',
-            'categories_data' => 'categorías',
-            'session_itinerary' => 'itinerario o puntos del mapa',
+            'categories_list' => 'categorías',
+            'itinerary' => 'itinerario o puntos del mapa',
         ];
     }
 }

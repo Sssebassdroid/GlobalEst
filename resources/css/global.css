@@ -2,6 +2,7 @@
     --primary-color: #CAF0F8;
     --secondary-color: #5cb8ca;
     --hover-secondary-color: #4fb7cc;
+    --primary-dark-color: #0077B6;
     --highlight-color: #4651a5;
 
     --error-color: #ff0000;
@@ -19,7 +20,7 @@
 }
 
 body{
-    background-color: #CAF0F8; /* Azul hielo suave */
+    background-color: var(--primary-dark-color);
     font-family: "League Spartan", sans-serif;
     color: #03045E;
     display: flex;
@@ -29,19 +30,19 @@ body{
 
 .nav{
     padding-inline: 2rem 1rem;
-    background-color: #0077B6;
+    background-color: var(--primary-dark-color);
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-#contenedor-opciones{
+#options-container{
     display: flex;
     gap: 2em;
 }
 
-#contenedor-opciones i {
+#options-container i {
     color: white; /* Iconos en blanco */
 }
 
@@ -57,7 +58,7 @@ body{
 
 #logo-container img,
 #logo-container h1,
-#contenedor-opciones a {
+#options-container a {
     transition: opacity 0.3s ease;
 }
 
@@ -66,7 +67,7 @@ body{
     opacity: 0.5;
 }
 
-#contenedor-opciones:hover a{
+#options-container:hover a{
     opacity: 0.5;
 }
 
@@ -112,20 +113,19 @@ body{
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Sombra suave */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .buscar{
     font-family: 'League Spartan', sans-serif;
-    padding: 0px 15px;
+    padding: 0 15px;
     border: none;
     flex: 3;
     outline: none;
-    color: #03045E;
 }
 
 #lupa {
-    background-color: #00B4D8; /* Cian para la lupa */
+    background-color: var(--primary-dark-color); /* Cian para la lupa */
     color: white;
     display: flex;
     align-items: center;
@@ -149,7 +149,7 @@ body{
 
 
 footer{
-    background-color: #03045E;
+    background-color: var(--primary-dark-color);
     color: white;
     text-align: center;
     padding: 10px;
